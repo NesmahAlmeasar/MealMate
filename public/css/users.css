@@ -1,0 +1,118 @@
+/* ==================== Users List Page Styles ==================== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.users-table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.users-table th, .users-table td {
+    padding: 12px 15px;
+    text-align: left; /* Default to LTR */
+    border-bottom: 1px solid var(--border-color);
+}
+
+body[dir="rtl"] .users-table th, body[dir="rtl"] .users-table td {
+    text-align: right; /* RTL support */
+}
+
+.users-table th {
+    background-color: var(--olive-very-light);
+    color: var(--olive-dark);
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.user-row {
+    transition: background-color 0.3s ease;
+}
+
+.user-row:hover {
+    background-color: #F9FAFB;
+}
+
+.client-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--olive-light);
+}
+
+.client-name-cell {
+    font-weight: 500;
+}
+
+.client-name-link {
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: bold; /* لجعل اسم العميل بارزاً */
+}
+
+.client-name-link:hover {
+    color: var(--blue-primary);
+}
+
+.diet-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Diet Colors */
+.diet-keto {
+    background-color: #FEE2E2; /* Red-like light color */
+    color: var(--red-accent);
+}
+
+.diet-lowcarb {
+    background-color: #DBEAFE; /* Blue-like light color */
+    color: var(--blue-primary);
+}
+
+.diet-vegan {
+    background-color: #D1FAE5; /* Green-like light color */
+    color: var(--green-accent);
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    text-decoration: none;
+    padding: 5px; /* لإعطاء مساحة للنقر */
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.delete-btn {
+    /* لا تحتاج لتنسيق إضافي غير لون الأيقونة */
+}

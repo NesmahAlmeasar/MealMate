@@ -1,0 +1,226 @@
+/* ==================== Client Profile Page Styles ==================== */
+
+.client-profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- Header Info --- */
+.client-info-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--beige-light); /* لمسة البيج */
+}
+
+.client-large-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--olive-dark);
+}
+
+.client-details {
+    flex-grow: 1;
+}
+
+.client-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.client-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+
+.client-meta i {
+    color: var(--olive-medium);
+    margin-left: 5px;
+}
+
+.client-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* --- Content Grid --- */
+.profile-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* --- Health Info Card --- */
+.health-info-card .info-group {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.health-info-card .info-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.health-info-card strong {
+    color: var(--olive-dark);
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.health-info-card p {
+    font-size: 14px;
+    color: var(--text-dark);
+    margin-right: 15px;
+    line-height: 1.5;
+}
+
+.disease-list-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.disease-tag {
+    background-color: var(--olive-light);
+    color: var(--olive-dark);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.hormone-status {
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hormone-status i {
+    color: var(--green-accent);
+}
+
+/* --- Stats Card (البلوونات المفعّلة) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stat-item {
+    background-color: var(--olive-very-light); /* لون زيتوني فاتح */
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--olive-light);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--olive-dark); /* تغيير لون القيمة إلى الزيتوني الداكن */
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.stat-green {
+    color: var(--green-accent);
+}
+
+.stat-red {
+    color: var(--red-accent);
+}
+
+.stat-blue {
+    color: var(--blue-primary);
+}
+
+.chart-placeholder {
+    height: 150px;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--border-color);
+    font-size: 30px;
+}
+
+.chart-placeholder p {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* --- Meals Table --- */
+.meals-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.meals-table th, .meals-table td {
+    padding: 10px 15px;
+    text-align: right;
+    border-bottom: 1px solid var(--olive-very-light);
+}
+
+.meals-table th {
+    background-color: var(--olive-light);
+    color: var(--olive-dark);
+    font-size: 13px;
+}
+
+.meals-table td i {
+    margin-left: 8px;
+    color: var(--olive-medium);
+}
+
+.meals-table tbody tr:nth-child(even) {
+    background-color: var(--beige-light);
+}
+
+.calories-value {
+    font-weight: bold;
+    color: var(--red-accent);
+    width: 100px;
+    text-align: center;
+}
+
+.meals-table tfoot td {
+    font-weight: bold;
+    border-top: 2px solid var(--olive-dark);
+}
+
+.total-label {
+    text-align: left !important;
+    color: var(--olive-dark);
+}
+
+.total-calories {
+    color: var(--green-accent);
+    font-size: 16px;
+    text-align: center;
+}
