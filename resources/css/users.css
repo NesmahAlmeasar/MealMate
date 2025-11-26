@@ -1,0 +1,69 @@
+/* ======================================= */
+/* ⭐️ الكود السحري للمرونة (Responsive) ⭐️ */
+/* ======================================= */
+
+/* سيتم تطبيق هذا الستايل فقط على الشاشات الصغيرة (مثل الجوال) */
+@media (max-width: 768px) {
+
+    /* 1. إخفاء رأس الجدول الأصلي (لأننا سنعرض العناوين بشكل آخر) */
+    .users-table thead {
+        display: none;
+    }
+
+    /* 2. تحويل كل "صف" في الجدول إلى "بطاقة" (Card) مستقلة */
+    .users-table tr.user-row {
+        display: block; /* جعل الصف يأخذ عرض الشاشة بالكامل */
+        width: 100%;
+        margin-bottom: 15px; /* مسافة بين كل بطاقة عميل */
+        border: 1px solid #eee;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        overflow: hidden; /* ليحافظ على شكل البطاقة */
+    }
+
+    /* 3. تحويل "الخلايا" لتُرص فوق بعضها */
+    .users-table td {
+        display: flex; /* نستخدم flex لترتيب العنوان والمحتوى */
+        justify-content: space-between; /* العنوان يميناً والمحتوى يساراً */
+        align-items: center;
+        padding: 12px 15px;
+        width: 100%; /* تأكد أن الخلية تأخذ العرض كاملاً */
+        border-bottom: 1px solid #f0f0f0;
+        text-align: right; /* محاذاة المحتوى (مثل الاسم) لليمين */
+    }
+
+    /* 4. إزالة الخط السفلي لآخر خلية في البطاقة */
+    .users-table tr.user-row td:last-child {
+        border-bottom: none;
+    }
+
+    /* 5. (أهم خطوة) - إظهار العنوان من "data-label" */
+    .users-table td::before {
+        content: attr(data-label); /* قراءة النص من data-label */
+        font-weight: 600;
+        color: var(--text-dark); /* (أو #333) */
+        padding-right: 15px; /* مسافة بين العنوان والمحتوى */
+        text-align: left; /* محاذاة العنوان لليسار */
+    }
+
+    /* 6. تنسيقات خاصة لخلايا معينة */
+    .users-table td[data-label="الصورة"] {
+        /* (يمكنك إخفاء الصورة على الجوال إذا أردت) */
+        /* display: none; */
+    }
+
+    .users-table td[data-label="الصورة"] img.client-avatar {
+        width: 45px; /* تصغير الصورة قليلاً */
+        height: 45px;
+    }
+
+    .users-table td[data-label="الإجراءات"] {
+        /* تعديل بسيط لترتيب الأزرار */
+        justify-content: flex-end; /* جعل الأزرار تبدأ من اليمين */
+        gap: 10px;
+    }
+
+    .users-table td[data-label="الإجراءات"]::before {
+        flex: 1; /* جعل العنوان "الإجراءات" يأخذ مساحته */
+    }
+}

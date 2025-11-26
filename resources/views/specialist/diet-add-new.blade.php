@@ -1,240 +1,335 @@
-@extends('layouts.specialist_app')
+@extends('layouts.admin_app')
 
-{{-- 1. تحديد عنوان الصفحة --}}
 @section('title', 'Add New Diet')
 
-{{-- 2. إضافة الـ CSS المضمن (inline) والملفات الخاصة بالصفحة --}}
 @push('styles')
-    {{-- <link rel="stylesheet" href="{{ asset('css/diets-styles.css') }}"> --}} {{-- هذا موجود الآن في التخطيط الرئيسي --}}
-    
-    {{-- هذا هو الـ CSS المضمن الذي كان في ملفك الأصلي --}}
-    <style>
-        /* Form Styles */
-        .diet-form {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        .form-group { margin-bottom: 15px; }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--olive-dark);
-            font-size: 14px;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="url"],
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            font-family: inherit;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--olive-medium);
-            outline: none;
-        }
-        .meals-section {
-            background-color: var(--olive-very-light);
-            border: 1px solid var(--olive-light);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        .meals-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--olive-dark);
-        }
-        .meals-list { display: flex; flex-wrap: wrap; gap: 10px; }
-        .meal-item {
-            background-color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .btn-remove-meal {
-            background: none; border: none;
-            color: var(--red-accent);
-            cursor: pointer; font-size: 12px;
-            transition: color 0.3s;
-        }
-        .btn-remove-meal:hover { color: #B91C1C; }
-        .modal { display: none; /* ... باقي الستايل ... */ }
-        /* (لقد اختصرتُ الستايل هنا لأنه مكرر من الكود الأصلي) */
-        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 600px; /* ... */ }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; position: absolute; top: 10px; right: 20px; cursor: pointer; }
-        .close-btn:hover { color: #000; }
-        .meal-checkbox-list { max-height: 300px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; }
-        .meal-checkbox-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 14px; color: var(--text-dark); }
-        .meal-checkbox-item:last-child { border-bottom: none; }
-        .meal-checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--olive-dark); cursor: pointer; }
-        .meal-checkbox-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
-        .page-title { font-size: 24px; font-weight: bold; color: var(--text-dark); }
-        .diets-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .btn-edit { background-color: var(--olive-light); color: var(--olive-dark); }
-        .btn-edit:hover { background-color: white; }
-        .btn-add { background-color: var(--olive-dark); color: white; font-weight: bold; padding: 10px 15px; border-radius: 5px; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer; transition: background-color 0.3s ease; }
-        .btn-add:hover { background-color: #556B2F; }
-    </style>
+<style>
+    .form-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .form-header {
+        margin-bottom: 30px;
+    }
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .checkbox-group input[type="checkbox"] {
+        width: auto;
+    }
+    .meals-selection {
+        grid-column: 1 / -1;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background: #f8f9fa;
+    }
+    .meals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+    .meal-checkbox-item {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .meal-checkbox-item:hover {
+        border-color: #667eea;
+    }
+    .meal-checkbox-item input[type="checkbox"]:checked + label {
+        color: #667eea;
+        font-weight: bold;
+    }
+    .meal-checkbox-item.selected {
+        border-color: #667eea;
+        background: #f0f4ff;
+    }
+    .restrictions-section {
+        grid-column: 1 / -1;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background: #f8f9fa;
+    }
+    .restriction-item {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 2fr auto;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: end;
+    }
+    .add-restriction-btn {
+        background: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .remove-restriction-btn {
+        background: #dc3545;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+    }
+</style>
 @endpush
 
-
-{{-- 3. هذا هو المحتوى المتغير --}}
 @section('content')
-    <a href="{{ url('specialist/diets') }}" class="back-btn" data-i18n="back">
-        <i class="fas fa-arrow-left"></i>
-        Back to Diets List
-    </a>
-    <div class="page-content">
-        <div class="diets-header-bar">
-            <h1 class="page-title" data-i18n="addNewDiet">Add New Diet</h1>
+<div class="form-container">
+    <div class="form-header">
+        <h1>Add New Diet</h1>
+        <p>Create a comprehensive diet plan with meals and restrictions</p>
+    </div>
+
+    @if($errors->any())
+        <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
+    @endif
 
-        <form class="diet-form">
-            {{-- (محتوى الفورم بالكامل هنا) --}}
+    <form action="{{ route('specialist.diets.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        
+        <div class="form-grid">
             <div class="form-group">
-                <label for="diet-name">Diet Name (English)</label>
-                <input type="text" id="diet-name" placeholder="e.g., Keto Diet" required>
-            </div>
-            <div class="form-group">
-                <label for="diet-name-ar">Diet Name (Arabic)</label>
-                <input type="text" id="diet-name-ar" placeholder="مثال: حمية الكيتو">
-            </div>
-            <div class="form-group">
-                <label for="diet-description">Description (English)</label>
-                <textarea id="diet-description" rows="4" placeholder="A brief description..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="diet-description-ar">Description (Arabic)</label>
-                <textarea id="diet-description-ar" rows="4" placeholder="وصف موجز..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="diet-image">Diet Image URL</label>
-                <input type="url" id="diet-image" placeholder="Paste image URL here">
+                <label for="name">Diet Name *</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" required>
             </div>
 
-            <div class="meals-section">
-                <div class="meals-title">
-                    <span data-i18n="selectedMeals">Associated Meals</span>
-                    <button type="button" class="btn btn-add" id="add-meal-btn">
-                        ➕ <span data-i18n="addMeal">Add Meal</span>
-                    </button>
+            <div class="form-group">
+                <label for="photo">Photo</label>
+                <input type="file" id="photo" name="photo" accept="image/*">
+            </div>
+
+            <div class="form-group full-width">
+                <label for="description">Description</label>
+                <textarea id="description" name="description">{{ old('description') }}</textarea>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="warning">Warnings</label>
+                <textarea id="warning" name="warning" placeholder="Any warnings or precautions for this diet">{{ old('warning') }}</textarea>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="advice">Advice</label>
+                <textarea id="advice" name="advice" placeholder="Tips and advice for following this diet">{{ old('advice') }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="is_public" name="is_public" value="1" {{ old('is_public') ? 'checked' : '' }}>
+                    <label for="is_public" style="margin-bottom: 0;">Make this diet public</label>
                 </div>
-                <div class="meals-list" id="selected-meals-list">
-                    <div class="meal-item">
-                        <span>Grilled Chicken Salad</span>
-                        <button type="button" class="btn-remove-meal">✕</button>
+            </div>
+
+            <div class="meals-selection">
+                <h3>Select Meals for This Diet</h3>
+                <p style="color: #666; margin-bottom: 15px;">Choose the meals that are part of this diet plan</p>
+                <div class="meals-grid">
+                    @foreach($meals as $meal)
+                        <div class="meal-checkbox-item" onclick="toggleMealCheckbox({{ $meal->meals_id }})">
+                            <input type="checkbox" 
+                                   id="meal_{{ $meal->meals_id }}" 
+                                   name="meals[]" 
+                                   value="{{ $meal->meals_id }}"
+                                   style="display: none;">
+                            <label for="meal_{{ $meal->meals_id }}" style="cursor: pointer; margin: 0;">
+                                <strong>{{ $meal->name }}</strong><br>
+                                <small style="color: #666;">
+                                    {{ $meal->category->category_name ?? 'N/A' }} | 
+                                    {{ $meal->calories ?? 0 }} kcal
+                                </small>
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="restrictions-section">
+                <h3>Nutritional Restrictions</h3>
+                <p style="color: #666; margin-bottom: 15px;">Add restrictions for this diet (e.g., max calories, min protein)</p>
+                <div id="restrictions-container">
+                    <div class="restriction-item">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Description</label>
+                            <input type="text" name="restrictions[0][restriction]" placeholder="e.g., Maximum daily calories">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Field</label>
+                            <select name="restrictions[0][field_name]">
+                                <option value="">Select Field</option>
+                                <option value="calories">Calories</option>
+                                <option value="protein_g">Protein (g)</option>
+                                <option value="carbs_g">Carbs (g)</option>
+                                <option value="fat_g">Fat (g)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Operator</label>
+                            <select name="restrictions[0][operator]">
+                                <option value="<">Less than (<)</option>
+                                <option value="<=">Less or equal (<=)</option>
+                                <option value="=">Equal (=)</option>
+                                <option value=">=">Greater or equal (>=)</option>
+                                <option value=">">Greater than (>)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Value</label>
+                            <input type="text" name="restrictions[0][value]" placeholder="e.g., 2000">
+                        </div>
+                        <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
                     </div>
                 </div>
+                <button type="button" class="add-restriction-btn" onclick="addRestriction()">+ Add Restriction</button>
             </div>
-
-            <button type="submit" class="btn btn-add" style="width: 100%; margin-top: 20px;">
-                💾 <span data-i18n="save">Save New Diet</span>
-            </button>
-        </form>
-    </div>
-
-    {{-- 4. المودال (Modal) الخاص بهذه الصفحة --}}
-    <div id="meal-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2 data-i18n="allAvailableMeals">Select Meals</h2>
-            <div class="meal-checkbox-list">
-                {{-- (محتوى المودال بالكامل هنا) --}}
-                <label class="meal-checkbox-item">
-                    <input type="checkbox" name="meal-select" value="meal1">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=100" alt="Grilled Salmon">
-                    <span>Grilled Salmon with Asparagus</span>
-                </label>
-                <label class="meal-checkbox-item">
-                    <input type="checkbox" name="meal-select" value="meal2">
-                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=100" alt="Stir-fry">
-                    <span>Vegetable Stir-fry</span>
-                </label>
-                {{-- ... الخ --}}
-            </div>
-            <button class="btn btn-add" id="confirm-meals-btn" style="width: 100%; margin-top: 10px;" data-i18n="confirmMeals">
-                Add Selected Meals
-            </button>
         </div>
-    </div>
-@endsection
 
-{{-- 5. إضافة الـ JS المضمن (inline) الخاص بهذه الصفحة --}}
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Create Diet</button>
+            <a href="{{ route('specialist.diets.index') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
 @push('scripts')
-    <script>
-        // كل كود الجافاسكربت المضمن الذي كان في ملفك الأصلي
-        const modal = document.getElementById('meal-modal');
-        const addMealBtn = document.getElementById('add-meal-btn');
-        const closeBtn = document.querySelector('#meal-modal .close-btn'); // استهداف أدق
-        const confirmMealsBtn = document.getElementById('confirm-meals-btn');
-        const selectedMealsList = document.getElementById('selected-meals-list');
+<script>
+    let restrictionCount = 1;
 
-        if (addMealBtn) {
-            addMealBtn.onclick = function () {
-                if (modal) modal.style.display = 'block';
-            }
-        }
-
-        if (closeBtn) {
-            closeBtn.onclick = function () {
-                if (modal) modal.style.display = 'none';
-            }
-        }
-
-        if (modal) {
-            window.addEventListener('click', function (event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        }
-
-        if (confirmMealsBtn) {
-            confirmMealsBtn.onclick = function () {
-                const checkboxes = document.querySelectorAll('.meal-checkbox-list input[type="checkbox"]:checked');
-                checkboxes.forEach(checkbox => {
-                    const mealName = checkbox.parentNode.querySelector('span').textContent;
-                    if (!Array.from(selectedMealsList.children).some(item => item.querySelector('span').textContent === mealName)) {
-                        const mealItem = document.createElement('div');
-                        mealItem.classList.add('meal-item');
-                        mealItem.innerHTML = `
-                            <span>${mealName}</span>
-                            <button type="button" class="btn-remove-meal">✕</button>
-                        `;
-                        selectedMealsList.appendChild(mealItem);
-                        mealItem.querySelector('.btn-remove-meal').onclick = function (e) {
-                            e.preventDefault();
-                            mealItem.remove();
-                        };
-                    }
-                    checkbox.checked = false;
-                });
-                if (modal) modal.style.display = 'none';
-            }
-        }
+    function toggleMealCheckbox(mealId) {
+        const checkbox = document.getElementById('meal_' + mealId);
+        const card = checkbox.closest('.meal-checkbox-item');
         
-        // إصلاح الخطأ: هذا الكود كان يستهدف الزر الوحيد الموجود مسبقاً
-        document.querySelectorAll('.meal-item .btn-remove-meal').forEach(btn => {
-            btn.onclick = function (e) {
-                e.preventDefault();
-                this.parentNode.remove();
-            };
-        });
-    </script>
+        checkbox.checked = !checkbox.checked;
+        
+        if (checkbox.checked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    }
+
+    function addRestriction() {
+        const container = document.getElementById('restrictions-container');
+        const newRestriction = `
+            <div class="restriction-item">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Description</label>
+                    <input type="text" name="restrictions[${restrictionCount}][restriction]" placeholder="e.g., Maximum daily calories">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Field</label>
+                    <select name="restrictions[${restrictionCount}][field_name]">
+                        <option value="">Select Field</option>
+                        <option value="calories">Calories</option>
+                        <option value="protein_g">Protein (g)</option>
+                        <option value="carbs_g">Carbs (g)</option>
+                        <option value="fat_g">Fat (g)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Operator</label>
+                    <select name="restrictions[${restrictionCount}][operator]">
+                        <option value="<">Less than (<)</option>
+                        <option value="<=">Less or equal (<=)</option>
+                        <option value="=">Equal (=)</option>
+                        <option value=">=">Greater or equal (>=)</option>
+                        <option value=">">Greater than (>)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Value</label>
+                    <input type="text" name="restrictions[${restrictionCount}][value]" placeholder="e.g., 2000">
+                </div>
+                <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', newRestriction);
+        restrictionCount++;
+    }
+
+    function removeRestriction(button) {
+        const container = document.getElementById('restrictions-container');
+        if (container.children.length > 1) {
+            button.closest('.restriction-item').remove();
+        } else {
+            alert('You must have at least one restriction field');
+        }
+    }
+</script>
 @endpush
+@endsection

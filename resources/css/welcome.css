@@ -1,0 +1,145 @@
+/* Primary Colors */
+:root {
+    --apple-green: #8BC34A; /* Light Apple Green */
+    --olive-green: #689F38; /* Medium Olive Green */
+    --dark-olive: #4CAF50; /* Dark Olive Green */
+    --light-bg: #F9F9F9;
+    --white: #FFFFFF;
+    --text-color: #333333;
+    --border-color: #DDDDDD;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* General Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--white);
+    color: var(--text-color);
+    text-align: left;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ================================================================= */
+/* Welcome Screen (index.html) */
+/* ================================================================= */
+
+.welcome-page {
+    position: relative;
+}
+
+.content-box {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    max-width: 800px;
+    width: 90%;
+    overflow: hidden;
+    margin-bottom: 50px;
+    border: 1px solid var(--border-color);
+}
+
+.logo-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #F0F4C3;
+}
+
+.logo-placeholder {
+    width: 150px;
+    height: 150px;
+    /* background-image: url('logo.png'); <-- تأكد من وضع الشعار في public/logo.png */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 10px;
+}
+
+.app-name {
+    font-size: 1.8rem;
+    color: var(--olive-green);
+    font-weight: bold;
+}
+
+.slogan-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.slogan-text {
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.heart-icon i {
+    font-size: 2.5rem;
+    color: var(--olive-green);
+    margin-top: 15px;
+}
+
+.transition-icon {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 3rem;
+    color: var(--apple-green);
+    transition: transform 0.3s ease;
+}
+
+.transition-icon:hover {
+    transform: scale(1.1);
+    color: var(--olive-green);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .content-box {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .logo-section, .slogan-section {
+        padding: 15px;
+    }
+
+    .logo-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+
+    .slogan-text {
+        font-size: 1.2rem;
+    }
+
+    .transition-icon {
+        right: 50%;
+        transform: translateX(50%);
+    }
+}

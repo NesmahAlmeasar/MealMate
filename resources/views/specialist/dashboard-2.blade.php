@@ -12,8 +12,7 @@
 {{-- 3. هذا هو المحتوى المتغير --}}
 @section('content')
     <div>
-        <h1 class="dashboard-title" data-i18n="patientsAdherence">Patients' Adherence to Diets</h1>
-
+<h1 class="dashboard-title" style="color: green;">Specialist Dashboard - Patients' Adherence</h1>
         <div class="chart-container">
             <div class="chart-title" data-i18n="patientsAdherence">Patients' Adherence to Diets</div>
             <div style="position: relative; height: 300px; width: 100%;"> {{-- تم زيادة الارتفاع --}}

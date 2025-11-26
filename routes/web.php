@@ -1,114 +1,159 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\AdminController; 
+use App\Http\Controllers\Specialist\SpecialistController; 
+use Illuminate\Support\Facades\Auth; // لـ Route::get('/user-role-redirect')
+
+/*
+|--------------------------------------------------------------------------
+| مسارات الويب (Web Routes)
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
-Route::get('/specialist/dishes', function () {
-    // 'specialist.dishes' تعني:
-    // اذهب إلى مجلد resources/views/specialist/
-    // واعرض ملف dishes.blade.php
-    return view('specialist.dishes');
-}); 
+// ⭐️⭐️ الحل الأخير: إضافة مسار 'dashboard' الاحتياطي ⭐️⭐️
+Route::get('/dashboard', function () {
+    // هذا المسار يوجه أي طلب لـ 'dashboard' مباشرة إلى مسار فحص الأدوار
+    return redirect()->route('user.role.redirect');
+})->name('dashboard'); // 👈 هذا هو الاسم الذي يطلبه Laravel
 
-// هذا هو الرابط لصفحة "إضافة حمية"
-Route::get('/specialist/diets/add', function () {
-    // 'specialist.diet-add-new' تعني:
-    // اذهب إلى مجلد resources/views/specialist/
-    // واعرض ملف diet-add-new.blade.php
-    return view('specialist.diet-add-new');
+require __DIR__.'/auth.php';
+
+// =======================================================
+// 2. مسارات لوحة تحكم المدير (Admin Group) ⭐️ تم تنظيفها ⭐️
+// =======================================================
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    
+    // لوحة التحكم الرئيسية
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard-2');
+    })->name('admin.dashboard');
+
+    // --- إدارة المستخدمين (CRUD) ---
+    
+    // [GET] عرض جدول المستخدمين (الرئيسية)
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    
+    // [POST] إضافة مستخدم جديد 
+    Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+    
+    // [DELETE] حذف المستخدم
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    
+    // [GET] عرض صفحة تعديل المستخدم (يستخدم المتحكم)
+    Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
+    
+    // [PUT] معالجة التحديث
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+
+    // بروفايل المستخدم
+    Route::get('/users/profile/{id}', function ($id) {
+        return view('admin.client_profile');
+    })->name('admin.users.profile');
+    
+    // مسارات أخرى خاصة بالمدير
+    Route::get('/messages', function () {
+        return view('admin.messages');
+    })->name('admin.messages');
+
+    // --- إدارة الوجبات (Meals Management) ---
+    Route::resource('meals', \App\Http\Controllers\Admin\MealController::class)->names([
+        'index' => 'admin.meals.index',
+        'create' => 'admin.meals.create',
+        'store' => 'admin.meals.store',
+        'show' => 'admin.meals.show',
+        'edit' => 'admin.meals.edit',
+        'update' => 'admin.meals.update',
+        'destroy' => 'admin.meals.destroy',
+    ]);
+
+    // --- عرض الحميات (Diets - Read Only) ---
+    Route::get('/diets', [\App\Http\Controllers\Admin\DietController::class, 'index'])->name('admin.diets.index');
+    Route::get('/diets/{id}', [\App\Http\Controllers\Admin\DietController::class, 'show'])->name('admin.diets.show');
+
+    // --- إدارة الطلبات (Orders Management) ---
+    Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
+    Route::post('/orders/{id}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 });
 
-// يمكنك إضافة رابط افتتاحي بسيط للوحة التحكم
-Route::get('/specialist/dashboard', function () {
-    // تأكد من أن ملف 'dashboard-2.blade.php' موجود في مجلد 'specialist'
-    return view('specialist.dashboard-2');
-});
-// --- مسارات إدارة العملاء (للأخصائي) ---
 
-// المسار لصفحة "إضافة عميل"
-Route::get('/specialist/users/add', function () {
-    // يعرض: resources/views/specialist/add_user.blade.php
-    return view('specialist.add_user');
-});
+// =======================================================
+// 3. مسارات الأخصائي (Specialist Group)
+// =======================================================
+Route::middleware(['auth'])->prefix('specialist')->group(function () {
+    
+    // ... (باقي مسارات Specialist تبقى كما هي) ...
 
-// المسار لصفحة "بروفايل العميل"
-// {id} هو متغير ديناميكي، يمكنك وضع أي رقم مكانه في الرابط
-Route::get('/specialist/users/profile/{id}', function ($id) {
-    // يعرض: resources/views/specialist/client_profile.blade.php
-    // لاحقاً، يمكننا استخدام $id لجلب بيانات العميل من قاعدة البيانات
-    return view('specialist.client_profile');
-});
+    Route::get('/dashboard', function () {
+        return view('specialist.dashboard-2');
+    })->name('specialist.dashboard');
 
-// (سنحتاج أيضاً لصفحة القائمة الرئيسية، لكن دعنا نختبر هاتين أولاً)
-Route::get('/specialist/users', function () {
-    // هذا المسار سيعرض 'users.blade.php' (الذي لم نجهزه بعد)
-    // حالياً سيعيد توجيهك لصفحة إضافة مستخدم
-    return redirect('/specialist/users/add');
-});
-// --- مسارات لوحة التحكم وتفاصيل الحمية ---
+    // --- Profile Routes ---
+    Route::get('/profile', [\App\Http\Controllers\Specialist\ProfileController::class, 'show'])->name('specialist.profile.show');
+    Route::post('/profile', [\App\Http\Controllers\Specialist\ProfileController::class, 'update'])->name('specialist.profile.update');
+    
+    
+    // --- إدارة الحميات (Diets Management) ---
+    Route::resource('diets', \App\Http\Controllers\Specialist\DietController::class)->names([
+        'index' => 'specialist.diets.index',
+        'create' => 'specialist.diets.create',
+        'store' => 'specialist.diets.store',
+        'show' => 'specialist.diets.show',
+        'edit' => 'specialist.diets.edit',
+        'update' => 'specialist.diets.update',
+        'destroy' => 'specialist.diets.destroy',
+    ]);
+    
+    // --- إدارة الوجبات (Meals for Specialist) ---
+    
+    // --- إدارة الوجبات (Meals for Specialist) ---
+    Route::get('/dishes', [\App\Http\Controllers\Specialist\MealController::class, 'index'])->name('specialist.dishes');
+    Route::get('/meals/pending', [\App\Http\Controllers\Specialist\MealController::class, 'pending'])->name('specialist.meals.pending');
+    Route::get('/meals/{id}', [\App\Http\Controllers\Specialist\MealController::class, 'show'])->name('specialist.meals.show');
+    Route::post('/meals/{id}/approve', [\App\Http\Controllers\Specialist\MealController::class, 'approve'])->name('specialist.meals.approve');
+    Route::post('/meals/{id}/reject', [\App\Http\Controllers\Specialist\MealController::class, 'reject'])->name('specialist.meals.reject');
 
-// المسار لصفحة لوحة التحكم (الرئيسية للأخصائي)
-Route::get('/specialist/dashboard', function () {
-    // يعرض: resources/views/specialist/dashboard-2.blade.php
-    return view('specialist.dashboard-2');
-});
+    Route::get('/users', function () {
+        return view('specialist.users');
+    })->name('specialist.users');
 
-// المسار لصفحة "تفاصيل الحمية"
-// {id} هو متغير ديناميكي
-Route::get('/specialist/diets/details/{id}', function ($id) {
-    // يعرض: resources/views/specialist/diet-details-new.blade.php
-    return view('specialist.diet-details-new');
-});
+    Route::get('/notifications', function () {
+        return view('specialist.notifications');
+    })->name('specialist.notifications');
 
-// --- مسارات الحميات والبروفايل ---
+    Route::get('/messages', function () {
+        return view('specialist.messages');
+    })->name('specialist.messages');
 
-// المسار لصفحة "الحميات" الرئيسية
-Route::get('/specialist/diets', function () {
-    // يعرض: resources/views/specialist/diets-main-new.blade.php
-    return view('specialist.diets-main-new');
-});
-
-// المسار لصفحة "بروفايل الأخصائي"
-Route::get('/specialist/profile', function () {
-    // يعرض: resources/views/specialist/doctor-1.blade.php
-    return view('specialist.doctor-1');
-});
-// --- مسارات تعديل العميل والرسائل ---
-
-// المسار لصفحة "تعديل عميل"
-// {id} هو متغير ديناميكي ليطابق العميل
-Route::get('/specialist/users/edit/{id}', function ($id) {
-    // يعرض: resources/views/specialist/edit_user.blade.php
-    // لاحقاً سنستخدم $id لجلب بيانات العميل الصحيح
-    return view('specialist.edit_user');
 });
 
-// المسار لصفحة "الرسائل"
-Route::get('/specialist/messages', function () {
-    // يعرض: resources/views/specialist/messages.blade.php
-    return view('specialist.messages');
-});
+// =======================================================
+// 4. مسار توجيه الدور (Role-Based Redirection)
+// =======================================================
 
-// --- مسارات العملاء، الوجبات المؤخراً، والإشعارات ---
+Route::get('/user-role-redirect', function () {
+    if (Auth::check()) {
+        $user = Auth::user()->load('roles'); // جلب الأدوار
+        
+        if ($user->roles->isEmpty()) {
+            return redirect('/');
+        }
+        
+        $roleName = $user->roles->first()->name;
 
-// (تحديث للمسار القديم)
-// المسار لصفحة "العملاء" الرئيسية (الجدول)
-Route::get('/specialist/users', function () {
-    // يعرض: resources/views/specialist/users.blade.php
-    return view('specialist.users');
-});
-
-// المسار لصفحة "الوجبات المضافة مؤخراً"
-Route::get('/specialist/recent-meals', function () {
-    // يعرض: resources/views/specialist/recent_meals.blade.php
-    return view('specialist.recent_meals');
-});
-
-// المسار لصفحة "الإشعارات"
-Route::get('/specialist/notifications', function () {
-    // يعرض: resources/views/specialist/notifications.blade.php
-    return view('specialist.notifications');
-});
+        if ($roleName === 'Admin') {
+            return redirect()->route('admin.dashboard'); 
+        } elseif ($roleName === 'Specialist') {
+            return redirect()->route('specialist.dashboard');
+        } else {
+            return redirect('/'); 
+        }
+    }
+    return redirect()->route('login');
+})->middleware(['auth'])->name('user.role.redirect');

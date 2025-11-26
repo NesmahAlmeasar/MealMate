@@ -3,62 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MealMate - Login</title>
-    <link rel="stylesheet" href="A.css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Sign In - MealMate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- إذا كنت تستخدم ملف CSS خارجي -->
+    <link rel="stylesheet" href="{{ asset('css/users.css') }}"> 
+    <style>
+        /* أكواد الـ CSS الخاصة بك هنا */
+        /* ... */
+    </style>
 </head>
+
 <body>
-    <div class="container login-page">
-        <div class="login-box">
-            <div class="profile-icon-large doctor-avatar-colored">
-                <!-- Placeholder for Colored Doctor Avatar Image -->
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">🍽️</div>
+                <h1 class="login-title">MealMate</h1>
+                <p class="login-subtitle">Sign in to your account</p>
             </div>
-            <form>
-                <div class="input-group">
-                    <input type="text" id="name" name="name" placeholder="Name" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                </div>
-                <a href="doctor-1.html" class="login-button">Log in</a>
-            </form>
-            <a href="signup.html" class="signup-link">Create Account</a>
+<form class="login-form" id="loginForm" method="POST" action="{{ route('login') }}">
+        @csrf {{-- هذا مهم جداً للمصادقة --}}
+        
+        @error('email')
+            <div class="alert alert-danger" style="margin-bottom: 10px; font-size: 14px;">
+                البريد الإلكتروني أو كلمة المرور غير صحيحة.
+            </div>
+        @enderror
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required class="@error('email') is-invalid @enderror">
         </div>
-        <!-- Surrounding Icons and Doctor Images -->
-        <div class="surrounding-elements">
-            <!-- Icon 1: Food List -->
-            <div class="icon-element icon-top-left">
-                <i class="fas fa-clipboard-list" style="color: #4CAF50;"></i>
-                <i class="fas fa-apple-alt" style="color: #FFC107;"></i>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required class="@error('password') is-invalid @enderror">
+        </div>
+
+        <div class="remember-forgot">
+            <label class="remember-me">
+                <input type="checkbox" name="remember">
+                Remember me
+            </label>
+            <a href="{{ url('/forgetpassword') }}" class="forgot-password">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn-login">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+    </form>
+            <div class="change-password-link">
+                {{-- ===== ⭐️ تم التعديل هنا ⭐️ ===== --}}
+                <a href="{{ url('/changepassword') }}">
+                    <i class="fas fa-key"></i> Change Password
+                </a>
             </div>
-            <!-- Icon 2: Heart Health -->
-            <div class="icon-element icon-top-right">
-                <i class="fas fa-heartbeat" style="color: #F44336;"></i>
-                <i class="fas fa-apple-alt" style="color: #4CAF50;"></i>
-            </div>
-            <!-- Icon 3: Add User -->
-            <div class="icon-element icon-mid-left">
-                <i class="fas fa-user-plus" style="color: #2196F3;"></i>
-                <i class="fas fa-apple-alt" style="color: #FF9800;"></i>
-            </div>
-            <!-- Icon 4: Checkmark -->
-            <div class="icon-element icon-mid-right">
-                <i class="fas fa-check-circle" style="color: #00BCD4;"></i>
-            </div>
-            <!-- Doctor Image 1 (Bottom Left) -->
-            <div class="doctor-image doctor-bottom-left">
-               
-                <!-- Placeholder for Doctor Image -->
-            </div>
-            <!-- Icon 5: Leaf/Nature -->
-            <div class="icon-element icon-bottom-center">
-                <i class="fas fa-leaf" style="color: #689F38;"></i>
-            </div>
-            <!-- Doctor Image 2 (Bottom Right) -->
-            <div class="doctor-image doctor-bottom-right">
-                <!-- Placeholder for Doctor Image -->
+
+        
+            <div class="login-footer">
+                {{-- ===== ⭐️ تم التعديل هنا ⭐️ ===== --}}
+                <a href="{{ url('/') }}">← Back to Home</a>
             </div>
         </div>
     </div>
+
+ 
 </body>
 </html>
+
+

@@ -1,138 +1,178 @@
-@extends('layouts.specialist_app')
+@extends('layouts.admin_app')
 
-{{-- 1. تحديد عنوان الصفحة --}}
 @section('title', 'Diets Management')
 
-{{-- 2. إضافة الـ CSS المضمن (inline) الخاص بهذه الصفحة --}}
 @push('styles')
-    <style>
-        /* Additional styles for Diets Main Page */
-        .page-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-dark);
-        }
-        .diets-header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .diets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .diet-card {
-            background-color: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .diet-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        .diet-image-container {
-            height: 180px;
-            overflow: hidden;
-        }
-        .diet-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        .diet-card:hover .diet-image {
-            transform: scale(1.05);
-        }
-        .diet-info { padding: 15px; }
-        .diet-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--olive-dark);
-            margin-bottom: 5px;
-        }
-        .diet-description {
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.4;
-        }
-        .btn-add {
-            background-color: var(--olive-dark);
-            color: white;
-            font-weight: bold;
-            padding: 10px 15px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .btn-add:hover { background-color: #556B2F; }
-    </style>
+<style>
+    .diets-container {
+        padding: 20px;
+    }
+    .diets-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .add-diet-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: transform 0.2s;
+    }
+    .add-diet-btn:hover {
+        transform: translateY(-2px);
+    }
+    .diets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    .diet-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+    .diet-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .diet-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .diet-content {
+        padding: 20px;
+    }
+    .diet-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .diet-description {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .diet-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    .diet-meals-count {
+        color: #667eea;
+        font-weight: bold;
+    }
+    .diet-actions {
+        display: flex;
+        gap: 8px;
+    }
+    .btn-sm {
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-view {
+        background: #17a2b8;
+        color: white;
+    }
+    .btn-edit {
+        background: #ffc107;
+        color: #000;
+    }
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+    .public-badge {
+        background: #28a745;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+    .private-badge {
+        background: #6c757d;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+</style>
 @endpush
 
-
-{{-- 3. هذا هو المحتوى المتغير --}}
 @section('content')
-    <div class="page-content">
-        <div class="diets-header-bar">
-            <h1 class="page-title" data-i18n="diets">Available Diets</h1>
-            {{-- إصلاح رابط الزر --}}
-            <button class="btn btn-add" onclick="window.location.href='{{ url('specialist/diets/add') }}';">
-                ➕ <span data-i18n="addNewDiet">Add New Diet</span>
-            </button>
-        </div>
-
-        <div class="diets-grid">
-            <div class="diet-card" onclick="window.location.href='{{ url('specialist/diets/details/1') }}';">
-                <div class="diet-image-container">
-                    <img src="https://images.unsplash.com/photo-1579613832135-ad9236236b85?q=80&w=1974" alt="Keto Diet" class="diet-image">
-                </div>
-                <div class="diet-info">
-                    <h2 class="diet-name">Keto Diet</h2>
-                    <p class="diet-description">Low-carb, high-fat diet that puts the body into a state of ketosis.</p>
-                </div>
-            </div>
-
-            <div class="diet-card" onclick="window.location.href='{{ url('specialist/diets/details/2') }}';">
-                <div class="diet-image-container">
-                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070" alt="Mediterranean Diet" class="diet-image">
-                </div>
-                <div class="diet-info">
-                    <h2 class="diet-name" data-i18n="mediterraneanDiet">Mediterranean Diet</h2>
-                    <p class="diet-description">A diet rich in vegetables, fruits, whole grains, and healthy fats.</p>
-                </div>
-            </div>
-
-            <div class="diet-card" onclick="window.location.href='{{ url('specialist/diets/details/3') }}';">
-                <div class="diet-image-container">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2070" alt="Vegan Diet" class="diet-image">
-                </div>
-                <div class="diet-info">
-                    <h2 class="diet-name">Vegan Diet</h2>
-                    <p class="diet-description">Excludes all animal products, including meat, dairy, and eggs.</p>
-                </div>
-            </div>
-
-            <div class="diet-card" onclick="window.location.href='{{ url('specialist/diets/details/4') }}';">
-                <div class="diet-image-container">
-                    <img src="https://images.unsplash.com/photo-1542826433-2a441312389d?q=80&w=2070" alt="Intermittent Fasting" class="diet-image">
-                </div>
-                <div class="diet-info">
-                    <h2 class="diet-name">Intermittent Fasting</h2>
-                    <p class="diet-description">An eating pattern that cycles between periods of eating and fasting.</p>
-                </div>
-            </div>
-        </div>
+<div class="diets-container">
+    <div class="diets-header">
+        <h1>Diets Management</h1>
+        <a href="{{ route('specialist.diets.create') }}" class="add-diet-btn">+ Add New Diet</a>
     </div>
+
+    @if(session('success'))
+        <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="diets-grid">
+        @forelse($diets as $diet)
+            <div class="diet-card" onclick="window.location='{{ route('specialist.diets.show', $diet->diets_id) }}'">
+                @if($diet->photo_url)
+                    <img src="{{ asset('storage/' . $diet->photo_url) }}" alt="{{ $diet->name }}" class="diet-image">
+                @else
+                    <img src="{{ asset('images/diet_placeholder.jpg') }}" alt="{{ $diet->name }}" class="diet-image">
+                @endif
+                
+                <div class="diet-content">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                        <h3 class="diet-title">{{ $diet->name }}</h3>
+                        <span class="{{ $diet->is_public ? 'public-badge' : 'private-badge' }}">
+                            {{ $diet->is_public ? 'Public' : 'Private' }}
+                        </span>
+                    </div>
+                    
+                    <p class="diet-description">{{ $diet->description ?? 'No description available' }}</p>
+                    
+                    <div class="diet-meta">
+                        <span class="diet-meals-count">
+                            🍽️ {{ $diet->meals->count() }} Meals
+                        </span>
+                        
+                        <div class="diet-actions" onclick="event.stopPropagation();">
+                            <a href="{{ route('specialist.diets.show', $diet->diets_id) }}" class="btn-sm btn-view">View</a>
+                            <a href="{{ route('specialist.diets.edit', $diet->diets_id) }}" class="btn-sm btn-edit">Edit</a>
+                            <form action="{{ route('specialist.diets.destroy', $diet->diets_id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">No diets found</p>
+                <a href="{{ route('specialist.diets.create') }}" class="add-diet-btn">Create Your First Diet</a>
+            </div>
+        @endforelse
+    </div>
+</div>
 @endsection
