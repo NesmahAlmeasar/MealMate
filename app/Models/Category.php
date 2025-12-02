@@ -24,4 +24,17 @@ class Category extends Model
     {
         return $this->hasMany(Meal::class, 'category_id', 'category_id');
     }
+
+    /**
+     * Relationship with Restaurants (Many-to-Many)
+     */
+    public function restaurants()
+    {
+        return $this->belongsToMany(
+            Restaurant::class,
+            'restaurant_categories',
+            'category_id',
+            'restaurants_id'
+        );
+    }
 }

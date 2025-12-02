@@ -72,4 +72,17 @@ class Meal extends Model
     {
         return $query->where('state', 'rejected');
     }
+
+    /**
+     * Relationship with Diets (Many-to-Many)
+     */
+    public function diets()
+    {
+        return $this->belongsToMany(
+            Diet::class,
+            'diet_meals',
+            'meals_id',
+            'diets_id'
+        );
+    }
 }

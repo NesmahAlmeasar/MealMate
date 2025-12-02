@@ -1,15 +1,14 @@
 <?php
 
-// app/Http/Controllers/Api/AuthController.php
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Otp; // تأكد من إنشاء مودل Otp إذا لم تقم بذلك
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginOtpMail; // سننشئ هذا لاحقاً
-// app/Http/Controllers/Api/AuthController.php (أضف هذه الدالة)
-
 
 class AuthController extends Controller
 {
