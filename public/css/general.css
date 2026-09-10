@@ -18,7 +18,7 @@ body {
   background-color: #F9FAFB;
   color: var(--text-dark);
   line-height: 1.6;
-  direction: ltr;
+  /* direction: ltr; */
   /* Can be overridden by .ar-lang or dir="rtl" */
   display: flex;
   justify-content: center;
@@ -335,6 +335,7 @@ body {
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
+
 }
 
 .admin-table thead th {
@@ -342,9 +343,9 @@ body {
   color: var(--olive-dark);
   font-weight: 700;
   font-size: 13px;
+  font-size: 13px;
   padding: 12px 15px;
-  text-align: right;
-  /* Default RTL for Arabic context */
+
   border-bottom: 2px solid var(--border-color);
   white-space: nowrap;
   overflow: hidden;
@@ -356,9 +357,9 @@ body {
   font-size: 14px;
   color: var(--text-dark);
   vertical-align: middle;
+  vertical-align: middle;
   border-bottom: 1px solid #eee;
-  text-align: right;
-  /* Default RTL for Arabic context */
+
 }
 
 /* Column Utilities */
@@ -473,12 +474,114 @@ body {
 }
 
 /* RTL Overrides if needed */
-body[dir="rtl"] .admin-table thead th,
+/* RTL Overrides - DISABLED for Tables as user requested LTR always */
+/* body[dir="rtl"] .admin-table thead th,
 body[dir="rtl"] .admin-table tbody td {
   text-align: right;
-}
+} */
 
 body[dir="ltr"] .admin-table thead th,
 body[dir="ltr"] .admin-table tbody td {
   text-align: left;
+}
+
+/* ==================== Modal Styles ==================== */
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1000;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Black w/ opacity */
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  /* Could be more or less, depending on screen size */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0
+  }
+
+  to {
+    top: 0;
+    opacity: 1
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.save-btn {
+  background-color: var(--olive-dark);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-btn:hover {
+  background-color: #55751d;
 }

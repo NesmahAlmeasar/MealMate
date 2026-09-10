@@ -10,7 +10,9 @@ class Allergy extends Model
     use HasFactory;
 
     protected $table = 'allergies';
+
     protected $primaryKey = 'allergies_id';
+
     public $incrementing = true;
 
     protected $fillable = [
@@ -27,6 +29,19 @@ class Allergy extends Model
             'ingredients_allergies',
             'allergies_id',
             'ingredients_id'
+        );
+    }
+
+    /**
+     * Relationship with Clients (Many-to-Many)
+     */
+    public function clients()
+    {
+        return $this->belongsToMany(
+            Client::class,
+            'clients_allergies',
+            'allergies_id',
+            'clients_id'
         );
     }
 }

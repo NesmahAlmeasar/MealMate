@@ -10,6 +10,7 @@ class Cart extends Model
     use HasFactory;
 
     protected $table = 'cart';
+
     protected $primaryKey = 'cart_id';
 
     protected $fillable = [
@@ -30,7 +31,10 @@ class Cart extends Model
     /**
      * Relationship with Client
      */
-    public function client()
+    /**
+     * Relationship with Client
+     */
+    public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Client::class, 'clients_id', 'clients_id');
     }
@@ -38,7 +42,7 @@ class Cart extends Model
     /**
      * Relationship with Restaurant
      */
-    public function restaurant()
+    public function restaurant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Restaurant::class, 'restaurants_id', 'restaurants_id');
     }
@@ -46,8 +50,16 @@ class Cart extends Model
     /**
      * Relationship with Cart Items
      */
-    public function items()
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CartItem::class, 'cart_id', 'cart_id');
+    }
+
+    /**
+     * Relationship with Location
+     */
+    public function location(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'location_id', 'location_id');
     }
 }

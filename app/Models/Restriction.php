@@ -10,7 +10,9 @@ class Restriction extends Model
     use HasFactory;
 
     protected $table = 'restrictions';
+
     protected $primaryKey = 'restriction_id';
+
     public $incrementing = true;
 
     protected $fillable = [

@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Edit Diet')
+@section('title', 'تعديل الحمية')
 
 @push('styles')
 <style>
@@ -120,13 +120,21 @@
         margin-top: 30px;
     }
     .btn-submit {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: rgba(107, 142, 35, 0.15);
+        color: #556B2F;
+        border: 2px solid #6B8E23;
         padding: 12px 30px;
-        border: none;
         border-radius: 8px;
-        font-weight: bold;
+        font-weight: 700;
         cursor: pointer;
+        box-shadow: 0 4px 15px rgba(107, 142, 35, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        background: #6B8E23;
+        color: white;
+        box-shadow: 0 6px 20px rgba(107, 142, 35, 0.4);
+        transform: translateY(-2px);
     }
     .btn-cancel {
         background: #6c757d;
@@ -147,8 +155,8 @@
 @section('content')
 <div class="form-container">
     <div class="form-header">
-        <h1>Edit Diet: {{ $diet->name }}</h1>
-        <p>Update the diet details below</p>
+        <h1>تعديل الحمية: {{ $diet->name }}</h1>
+        <p>قم بتحديث تفاصيل الحمية أدناه</p>
     </div>
 
     @if($errors->any())
@@ -167,43 +175,43 @@
         
         <div class="form-grid">
             <div class="form-group">
-                <label for="name">Diet Name *</label>
+                <label for="name">اسم الحمية *</label>
                 <input type="text" id="name" name="name" value="{{ old('name', $diet->name) }}" required>
             </div>
 
             <div class="form-group">
-                <label for="photo">Photo (leave empty to keep current)</label>
-                <input type="file" id="photo" name="photo" accept="image/*">
+                <label for="photo">الصورة (اتركها فارغة للاحتفاظ بالحالية)</label>
+                <input type="file" id="photo" name="photo" class="form-control" accept="image/*">
                 @if($diet->photo_url)
                     <img src="{{ asset('storage/' . $diet->photo_url) }}" alt="Current photo" class="current-image">
                 @endif
             </div>
 
             <div class="form-group full-width">
-                <label for="description">Description</label>
+                <label for="description">الوصف</label>
                 <textarea id="description" name="description">{{ old('description', $diet->description) }}</textarea>
             </div>
 
             <div class="form-group full-width">
-                <label for="warning">Warnings</label>
-                <textarea id="warning" name="warning" placeholder="Any warnings or precautions for this diet">{{ old('warning', $diet->warning) }}</textarea>
+                <label for="warning">تحذيرات</label>
+                <textarea id="warning" name="warning" placeholder="أي تحذيرات أو احتياطات لهذه الحمية">{{ old('warning', $diet->warning) }}</textarea>
             </div>
 
             <div class="form-group full-width">
-                <label for="advice">Advice</label>
-                <textarea id="advice" name="advice" placeholder="Tips and advice for following this diet">{{ old('advice', $diet->advice) }}</textarea>
+                <label for="advice">نصائح</label>
+                <textarea id="advice" name="advice" placeholder="نصائح لاتباع هذه الحمية">{{ old('advice', $diet->advice) }}</textarea>
             </div>
 
             <div class="form-group">
                 <div class="checkbox-group">
                     <input type="checkbox" id="is_public" name="is_public" value="1" {{ old('is_public', $diet->is_public) ? 'checked' : '' }}>
-                    <label for="is_public" style="margin-bottom: 0;">Make this diet public</label>
+                    <label for="is_public" style="margin-bottom: 0;">جعل هذه الحمية عامة</label>
                 </div>
             </div>
 
             <div class="meals-selection">
-                <h3>Select Meals for This Diet</h3>
-                <p style="color: #666; margin-bottom: 15px;">Choose the meals that are part of this diet plan</p>
+                <h3>اختر وجبات لهذه الحمية</h3>
+                <p style="color: #666; margin-bottom: 15px;">اختر الوجبات التي تشكل جزءاً من خطة الحمية هذه</p>
                 <div class="meals-grid">
                     @php
                         $selectedMealIds = $diet->meals->pluck('meals_id')->toArray();
@@ -229,82 +237,82 @@
             </div>
 
             <div class="restrictions-section">
-                <h3>Nutritional Restrictions</h3>
-                <p style="color: #666; margin-bottom: 15px;">Update restrictions for this diet</p>
+                <h3>القيود الغذائية</h3>
+                <p style="color: #666; margin-bottom: 15px;">تحديث القيود لهذه الحمية</p>
                 <div id="restrictions-container">
                     @forelse($diet->restrictions as $index => $restriction)
                         <div class="restriction-item">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Description</label>
-                                <input type="text" name="restrictions[{{ $index }}][restriction]" value="{{ $restriction->restriction }}" placeholder="e.g., Maximum daily calories">
+                                <label>الوصف</label>
+                                <input type="text" name="restrictions[{{ $index }}][restriction]" value="{{ $restriction->restriction }}" placeholder="مثال: الحد الأقصى للسعرات">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Field</label>
+                                <label>الحقل</label>
                                 <select name="restrictions[{{ $index }}][field_name]">
-                                    <option value="">Select Field</option>
-                                    <option value="calories" {{ $restriction->field_name == 'calories' ? 'selected' : '' }}>Calories</option>
-                                    <option value="protein_g" {{ $restriction->field_name == 'protein_g' ? 'selected' : '' }}>Protein (g)</option>
-                                    <option value="carbs_g" {{ $restriction->field_name == 'carbs_g' ? 'selected' : '' }}>Carbs (g)</option>
-                                    <option value="fat_g" {{ $restriction->field_name == 'fat_g' ? 'selected' : '' }}>Fat (g)</option>
+                                    <option value="">اختر الحقل</option>
+                                    <option value="calories" {{ $restriction->field_name == 'calories' ? 'selected' : '' }}>سعرات</option>
+                                    <option value="protein_g" {{ $restriction->field_name == 'protein_g' ? 'selected' : '' }}>بروتين (جم)</option>
+                                    <option value="carbs_g" {{ $restriction->field_name == 'carbs_g' ? 'selected' : '' }}>كربوهيدرات (جم)</option>
+                                    <option value="fat_g" {{ $restriction->field_name == 'fat_g' ? 'selected' : '' }}>دهون (جم)</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Operator</label>
+                                <label>العملية</label>
                                 <select name="restrictions[{{ $index }}][operator]">
-                                    <option value="<" {{ $restriction->operator == '<' ? 'selected' : '' }}>Less than (<)</option>
-                                    <option value="<=" {{ $restriction->operator == '<=' ? 'selected' : '' }}>Less or equal (<=)</option>
-                                    <option value="=" {{ $restriction->operator == '=' ? 'selected' : '' }}>Equal (=)</option>
-                                    <option value=">=" {{ $restriction->operator == '>=' ? 'selected' : '' }}>Greater or equal (>=)</option>
-                                    <option value=">" {{ $restriction->operator == '>' ? 'selected' : '' }}>Greater than (>)</option>
+                                    <option value="<" {{ $restriction->operator == '<' ? 'selected' : '' }}>أقل من (<)</option>
+                                    <option value="<=" {{ $restriction->operator == '<=' ? 'selected' : '' }}>أقل أو يساوي (<=)</option>
+                                    <option value="=" {{ $restriction->operator == '=' ? 'selected' : '' }}>يساوي (=)</option>
+                                    <option value=">=" {{ $restriction->operator == '>=' ? 'selected' : '' }}>أكبر أو يساوي (>=)</option>
+                                    <option value=">" {{ $restriction->operator == '>' ? 'selected' : '' }}>أكبر من (>)</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Value</label>
-                                <input type="text" name="restrictions[{{ $index }}][value]" value="{{ $restriction->value }}" placeholder="e.g., 2000">
+                                <label>القيمة</label>
+                                <input type="text" name="restrictions[{{ $index }}][value]" value="{{ $restriction->value }}" placeholder="مثال: 2000">
                             </div>
-                            <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
+                            <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">حذف</button>
                         </div>
                     @empty
                         <div class="restriction-item">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Description</label>
-                                <input type="text" name="restrictions[0][restriction]" placeholder="e.g., Maximum daily calories">
+                                <label>الوصف</label>
+                                <input type="text" name="restrictions[0][restriction]" placeholder="مثال: الحد الأقصى للسعرات">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Field</label>
+                                <label>الحقل</label>
                                 <select name="restrictions[0][field_name]">
-                                    <option value="">Select Field</option>
-                                    <option value="calories">Calories</option>
-                                    <option value="protein_g">Protein (g)</option>
-                                    <option value="carbs_g">Carbs (g)</option>
-                                    <option value="fat_g">Fat (g)</option>
+                                    <option value="">اختر الحقل</option>
+                                    <option value="calories">سعرات</option>
+                                    <option value="protein_g">بروتين (جم)</option>
+                                    <option value="carbs_g">كربوهيدرات (جم)</option>
+                                    <option value="fat_g">دهون (جم)</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Operator</label>
+                                <label>العملية</label>
                                 <select name="restrictions[0][operator]">
-                                    <option value="<">Less than (<)</option>
-                                    <option value="<=">Less or equal (<=)</option>
-                                    <option value="=">Equal (=)</option>
-                                    <option value=">=">Greater or equal (>=)</option>
-                                    <option value=">">Greater than (>)</option>
+                                    <option value="<">أقل من (<)</option>
+                                    <option value="<=">أقل أو يساوي (<=)</option>
+                                    <option value="=">يساوي (=)</option>
+                                    <option value=">=">أكبر أو يساوي (>=)</option>
+                                    <option value=">">أكبر من (>)</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label>Value</label>
-                                <input type="text" name="restrictions[0][value]" placeholder="e.g., 2000">
+                                <label>القيمة</label>
+                                <input type="text" name="restrictions[0][value]" placeholder="مثال: 2000">
                             </div>
-                            <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
+                            <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">حذف</button>
                         </div>
                     @endforelse
                 </div>
-                <button type="button" class="add-restriction-btn" onclick="addRestriction()">+ Add Restriction</button>
+                <button type="button" class="add-restriction-btn" onclick="addRestriction()">+ إضافة قيد</button>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn-submit">Update Diet</button>
-            <a href="{{ route('specialist.diets.index') }}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">تحديث الحمية</button>
+            <a href="{{ route('specialist.diets.index') }}" class="btn-cancel">إلغاء</a>
         </div>
     </form>
 </div>
@@ -331,34 +339,34 @@
         const newRestriction = `
             <div class="restriction-item">
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Description</label>
-                    <input type="text" name="restrictions[${restrictionCount}][restriction]" placeholder="e.g., Maximum daily calories">
+                    <label>الوصف</label>
+                    <input type="text" name="restrictions[${restrictionCount}][restriction]" placeholder="مثال: الحد الأقصى للسعرات">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Field</label>
+                    <label>الحقل</label>
                     <select name="restrictions[${restrictionCount}][field_name]">
-                        <option value="">Select Field</option>
-                        <option value="calories">Calories</option>
-                        <option value="protein_g">Protein (g)</option>
-                        <option value="carbs_g">Carbs (g)</option>
-                        <option value="fat_g">Fat (g)</option>
+                        <option value="">اختر الحقل</option>
+                        <option value="calories">سعرات</option>
+                        <option value="protein_g">بروتين (جم)</option>
+                        <option value="carbs_g">كربوهيدرات (جم)</option>
+                        <option value="fat_g">دهون (جم)</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Operator</label>
+                    <label>العملية</label>
                     <select name="restrictions[${restrictionCount}][operator]">
-                        <option value="<">Less than (<)</option>
-                        <option value="<=">Less or equal (<=)</option>
-                        <option value="=">Equal (=)</option>
-                        <option value=">=">Greater or equal (>=)</option>
-                        <option value=">">Greater than (>)</option>
+                        <option value="<">أقل من (<)</option>
+                        <option value="<=">أقل أو يساوي (<=)</option>
+                        <option value="=">يساوي (=)</option>
+                        <option value=">=">أكبر أو يساوي (>=)</option>
+                        <option value=">">أكبر من (>)</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Value</label>
-                    <input type="text" name="restrictions[${restrictionCount}][value]" placeholder="e.g., 2000">
+                    <label>القيمة</label>
+                    <input type="text" name="restrictions[${restrictionCount}][value]" placeholder="مثال: 2000">
                 </div>
-                <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
+                <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">حذف</button>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', newRestriction);
@@ -370,7 +378,7 @@
         if (container.children.length > 1) {
             button.closest('.restriction-item').remove();
         } else {
-            alert('You must have at least one restriction field');
+            alert('يجب أن يكون لديك حقل قيد واحد على الأقل');
         }
     }
 </script>

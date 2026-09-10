@@ -1,7 +1,7 @@
 @extends('layouts.admin_app')
 
 {{-- 1. تحديد عنوان الصفحة --}}
-@section('title', 'Healthy Dishes')
+@section('title', 'الأطباق الصحية')
 
 {{-- 2. إضافة ملف الـ CSS الخاص بهذه الصفحة فقط --}}
 @push('styles')
@@ -13,7 +13,7 @@
 @section('content')
     <section class="content-section">
         <div class="section-header">
-            <h2 class="section-title" id="dishes-title" data-i18n="healthyDishes">Healthy Dishes</h2>
+            <h2 class="section-title" id="dishes-title" data-i18n="healthyDishes">الأطباق الصحية</h2>
             <a href="{{ route('specialist.meals.pending') }}" class="recent-meals-btn" id="recent-meals-btn">
                 الوجبات المضافة مؤخراً  
             </a>
@@ -60,27 +60,27 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div class="modal-header">
-                <h2 class="modal-title" id="modal-meal-title">Meal Name</h2>
+                <h2 class="modal-title" id="modal-meal-title">اسم الوجبة</h2>
             </div>
             <div class="modal-body">
                 <div class="meal-details-left">
                     <img src="{{ asset('images/meal_placeholder.jpg') }}" alt="Meal Image" class="modal-image" id="modal-meal-image">
-                    <div class="detail-label" data-i18n="description">Description:</div>
-                    <p class="detail-value" id="modal-meal-description">Loading...</p>
-                    <div class="detail-label" data-i18n="nutritionalFacts">Nutritional Facts:</div>
+                    <div class="detail-label" data-i18n="description">الوصف:</div>
+                    <p class="detail-value" id="modal-meal-description">جاري التحميل...</p>
+                    <div class="detail-label" data-i18n="nutritionalFacts">الحقائق الغذائية:</div>
                     <p class="detail-value">
                         <span id="modal-meal-calories" class="calories">0 Kcal</span> | 
                         Protein: <span id="modal-meal-protein">0g</span> | 
                         Carbs: <span id="modal-meal-carbs">0g</span> | 
                         Fat: <span id="modal-meal-fat">0g</span>
                     </p>
-                    <div class="detail-label">Price:</div>
+                    <div class="detail-label">السعر:</div>
                     <p class="detail-value">
                         $<span id="modal-meal-price">0</span>
                     </p>
                 </div>
                 <div class="meal-details-right">
-                    <div class="detail-label" data-i18n="components">Ingredients:</div>
+                    <div class="detail-label" data-i18n="components">المكونات:</div>
                     <ul class="ingredients-list" id="modal-ingredients-list">
                         {{-- يتم ملؤها بواسطة JS --}}
                     </ul>
@@ -158,7 +158,7 @@
                                 ingredientsList.appendChild(li);
                             });
                         } else {
-                            ingredientsList.innerHTML = '<li>No ingredients listed</li>';
+                            ingredientsList.innerHTML = '<li>لا توجد مكونات مسجلة</li>';
                         }
                         
                         // Show modal
@@ -167,7 +167,7 @@
                 })
                 .catch(error => {
                     console.error('Error loading meal details:', error);
-                    alert('Failed to load meal details');
+                    alert('فشل في تحميل تفاصيل الوجبة');
                 });
         }
     </script>

@@ -1,7 +1,7 @@
-@extends('layouts.specialist_app')
+@extends('layouts.admin_app')
 
 {{-- 1. تحديد عنوان الصفحة --}}
-@section('title', 'My Profile')
+@section('title', 'ملفي الشخصي')
 
 {{-- 2. إضافة CSS الخاص بهذه الصفحة + الـ CSS المضمّن --}}
 @push('styles')
@@ -261,63 +261,63 @@
     
    
     <div class="profile-header">
-        <h1 class="profile-title">My Profile</h1>
+        <h1 class="profile-title">ملفي الشخصي</h1>
     </div>
 
     <div class="profile-content">
         <div class="profile-card">
             <div class="profile-image">👨‍⚕️</div>
             <div class="profile-name" id="profileName">Dr. Ahmed Hassan</div>
-            <div class="profile-title-text">Nutrition Specialist</div>
+            <div class="profile-title-text">أخصائي التغذية</div>
 
             <div class="profile-stats">
                 <div class="stat-item">
                     <div class="stat-number">24</div>
-                    <div class="stat-text">Clients</div>
+                    <div class="stat-text">العملاء</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">18</div>
-                    <div class="stat-text">Diets</div>
+                    <div class="stat-text">الحميات</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">4.8</div>
-                    <div class="stat-text">Rating</div>
+                    <div class="stat-text">التقييم</div>
                 </div>
             </div>
 
             <div class="profile-actions">
                 <button class="btn-edit" onclick="editProfile()">
-                    <i class="fas fa-edit"></i> Edit Profile
+                    <i class="fas fa-edit"></i> تعديل الملف الشخصي
                 </button>
                 <button class="btn-add-info" onclick="openModal('addInfoModal')">
-                    <i class="fas fa-plus"></i> Add Info
+                    <i class="fas fa-plus"></i> إضافة معلومات
                 </button>
             </div>
         </div>
 
         <div class="profile-details">
             <div class="details-section">
-                <div class="section-title">Personal Information</div>
+                <div class="section-title">المعلومات الشخصية</div>
                 <div class="detail-row">
-                    <div class="detail-label">Full Name</div>
+                    <div class="detail-label">الاسم الكامل</div>
                     <div class="detail-value">Dr. Ahmed Hassan</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Email</div>
+                    <div class="detail-label">البريد الإلكتروني</div>
                     <div class="detail-value">ahmed.hassan@nutrition.com</div>
                 </div>
                 </div>
 
             <div class="details-section">
-                <div class="section-title">Professional Information</div>
+                <div class="section-title">المعلومات المهنية</div>
                 <div class="detail-row">
-                    <div class="detail-label">Specialization</div>
+                    <div class="detail-label">التخصص</div>
                     <div class="detail-value">Clinical Nutrition</div>
                 </div>
                 </div>
 
             <div class="details-section">
-                <div class="section-title">Specializations</div>
+                <div class="section-title">التخصصات</div>
                 <div class="info-grid">
                     <div class="info-card">
                         <div class="info-card-icon">🏋️</div>
@@ -327,7 +327,7 @@
             </div>
 
             <div class="details-section">
-                <div class="section-title">Bio</div>
+                <div class="section-title">نبذة عني</div>
                 <p style="color: var(--text-light); font-size: 14px; line-height: 1.6;">
                     Passionate nutrition specialist with over 8 years of experience...
                 </p>
@@ -338,33 +338,33 @@
     <div id="addInfoModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Add Information</h2>
+                <h2 class="modal-title">إضافة معلومات</h2>
                 <button class="modal-close" onclick="closeModal('addInfoModal')">×</button>
             </div>
             <form id="addInfoForm" onsubmit="handleAddInfo(event)">
                 <div class="form-group">
-                    <label for="infoType">Information Type</label>
+                    <label for="infoType">نوع المعلومة</label>
                     <select id="infoType" name="infoType" required>
-                        <option value="">Select Type</option>
-                        <option value="certification">Certification</option>
-                        <option value="specialization">Specialization</option>
+                        <option value="">اختر النوع</option>
+                        <option value="certification">شهادة</option>
+                        <option value="specialization">تخصص</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="infoTitle">Title</label>
-                    <input type="text" id="infoTitle" name="infoTitle" placeholder="Enter title" required>
+                    <label for="infoTitle">العنوان</label>
+                    <input type="text" id="infoTitle" name="infoTitle" placeholder="أدخل العنوان" required>
                 </div>
                 <div class="form-group">
-                    <label for="infoDescription">Description</label>
-                    <textarea id="infoDescription" name="infoDescription" placeholder="Enter description" required></textarea>
+                    <label for="infoDescription">الوصف</label>
+                    <textarea id="infoDescription" name="infoDescription" placeholder="أدخل الوصف" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="infoDate">Date</label>
+                    <label for="infoDate">التاريخ</label>
                     <input type="date" id="infoDate" name="infoDate" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="closeModal('addInfoModal')">Cancel</button>
-                    <button type="submit" class="btn-primary">Add Information</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('addInfoModal')">إلغاء</button>
+                    <button type="submit" class="btn-primary">إضافة المعلومات</button>
                 </div>
             </form>
         </div>
@@ -392,7 +392,7 @@
 
         // دوال البروفايل
         function editProfile() {
-            alert('Edit profile functionality coming soon!');
+            alert('ميزة تعديل الملف الشخصي قريباً!');
         }
 
         function handleAddInfo(event) {
@@ -406,7 +406,7 @@
             if (typeof showToast === 'function') {
                 showToast('addSuccessfully'); // (افترض أن هذا المفتاح موجود في ملف الترجمة)
             } else {
-                alert('Information added successfully!');
+                alert('تمت إضافة المعلومات بنجاح!');
             }
             
             closeModal('addInfoModal');

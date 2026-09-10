@@ -10,7 +10,9 @@ class Meal extends Model
     use HasFactory;
 
     protected $table = 'meals';
+
     protected $primaryKey = 'meals_id';
+
     public $incrementing = true;
 
     protected $fillable = [
@@ -19,27 +21,36 @@ class Meal extends Model
         'photo_url',
         'price',
         'state',
-        'proper_time',
+        'preparation_time',
         'quantity_g',
         'calories',
         'protein_g',
         'fat_g',
         'carbs_g',
         'category_id',
+        'restaurant_id',
     ];
 
     /**
      * Relationship with Category
      */
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
 
     /**
+     * Relationship with Restaurant
+     */
+    public function restaurant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id', 'restaurants_id');
+    }
+
+    /**
      * Relationship with Ingredients (Many-to-Many)
      */
-    public function ingredients()
+    public function ingredients(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             Ingredient::class,
@@ -50,33 +61,9 @@ class Meal extends Model
     }
 
     /**
-     * Scope for approved meals
-     */
-    public function scopeApproved($query)
-    {
-        return $query->where('state', 'approved');
-    }
-
-    /**
-     * Scope for pending meals
-     */
-    public function scopePending($query)
-    {
-        return $query->where('state', 'pending');
-    }
-
-    /**
-     * Scope for rejected meals
-     */
-    public function scopeRejected($query)
-    {
-        return $query->where('state', 'rejected');
-    }
-
-    /**
      * Relationship with Diets (Many-to-Many)
      */
-    public function diets()
+    public function diets(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             Diet::class,
@@ -84,5 +71,13 @@ class Meal extends Model
             'meals_id',
             'diets_id'
         );
+    }
+
+    /**
+     * Scope for approved meals
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('state', 'approved');
     }
 }

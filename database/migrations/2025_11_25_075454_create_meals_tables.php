@@ -59,13 +59,13 @@ return new class extends Migration
             $table->unsignedBigInteger('ingredients_id');
             $table->decimal('quantity_g', 8, 2)->nullable(); // كمية المكون في الوجبة
             $table->primary(['meals_id', 'ingredients_id']);
-            
+
             $table->foreign('meals_id')->references('meals_id')->on('meals')->onDelete('cascade');
             $table->foreign('ingredients_id')->references('ingredients_id')->on('ingredients')->onDelete('cascade');
         });
 
         // 5. Create allergies table (if not exists)
-        if (!Schema::hasTable('allergies')) {
+        if (! Schema::hasTable('allergies')) {
             Schema::create('allergies', function (Blueprint $table) {
                 $table->id('allergies_id');
                 $table->string('allergies', 100)->unique();
@@ -78,7 +78,7 @@ return new class extends Migration
             $table->unsignedBigInteger('ingredients_id');
             $table->unsignedBigInteger('allergies_id');
             $table->primary(['ingredients_id', 'allergies_id']);
-            
+
             $table->foreign('ingredients_id')->references('ingredients_id')->on('ingredients')->onDelete('cascade');
             $table->foreign('allergies_id')->references('allergies_id')->on('allergies')->onDelete('cascade');
         });

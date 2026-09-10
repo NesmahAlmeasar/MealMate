@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Add New Diet')
+@section('title', 'إضافة حمية جديدة')
 
 @push('styles')
 <style>
@@ -124,13 +124,21 @@
         margin-top: 30px;
     }
     .btn-submit {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: rgba(107, 142, 35, 0.15);
+        color: #556B2F;
+        border: 2px solid #6B8E23;
         padding: 12px 30px;
-        border: none;
         border-radius: 8px;
-        font-weight: bold;
+        font-weight: 700;
         cursor: pointer;
+        box-shadow: 0 4px 15px rgba(107, 142, 35, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        background: #6B8E23;
+        color: white;
+        box-shadow: 0 6px 20px rgba(107, 142, 35, 0.4);
+        transform: translateY(-2px);
     }
     .btn-cancel {
         background: #6c757d;
@@ -146,8 +154,8 @@
 @section('content')
 <div class="form-container">
     <div class="form-header">
-        <h1>Add New Diet</h1>
-        <p>Create a comprehensive diet plan with meals and restrictions</p>
+        <h1>إضافة حمية جديدة</h1>
+        <p>قم بإنشاء خطة حمية شاملة مع الوجبات والقيود</p>
     </div>
 
     @if($errors->any())
@@ -165,40 +173,66 @@
         
         <div class="form-grid">
             <div class="form-group">
-                <label for="name">Diet Name *</label>
+                <label for="name">اسم الحمية *</label>
                 <input type="text" id="name" name="name" value="{{ old('name') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="photo">Photo</label>
-                <input type="file" id="photo" name="photo" accept="image/*">
+                <label for="photo">الصورة</label>
+                <input type="file" id="photo" name="photo" class="form-control" accept="image/*">
             </div>
 
             <div class="form-group full-width">
-                <label for="description">Description</label>
+                <label for="description">الوصف</label>
                 <textarea id="description" name="description">{{ old('description') }}</textarea>
             </div>
 
             <div class="form-group full-width">
-                <label for="warning">Warnings</label>
-                <textarea id="warning" name="warning" placeholder="Any warnings or precautions for this diet">{{ old('warning') }}</textarea>
+                <label for="warning">تحذيرات</label>
+                <textarea id="warning" name="warning" placeholder="أي تحذيرات أو احتياطات لهذه الحمية">{{ old('warning') }}</textarea>
             </div>
 
             <div class="form-group full-width">
-                <label for="advice">Advice</label>
-                <textarea id="advice" name="advice" placeholder="Tips and advice for following this diet">{{ old('advice') }}</textarea>
+                <label for="advice">نصائح</label>
+                <textarea id="advice" name="advice" placeholder="نصائح لاتباع هذه الحمية">{{ old('advice') }}</textarea>
             </div>
 
             <div class="form-group">
                 <div class="checkbox-group">
                     <input type="checkbox" id="is_public" name="is_public" value="1" {{ old('is_public') ? 'checked' : '' }}>
-                    <label for="is_public" style="margin-bottom: 0;">Make this diet public</label>
+                    <label for="is_public" style="margin-bottom: 0;">جعل هذه الحمية عامة</label>
                 </div>
             </div>
 
             <div class="meals-selection">
-                <h3>Select Meals for This Diet</h3>
-                <p style="color: #666; margin-bottom: 15px;">Choose the meals that are part of this diet plan</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div>
+                        <h3 style="margin: 0;">اختر وجبات لهذه الحمية</h3>
+                        <p style="color: #666; margin: 5px 0 0 0;">اختر الوجبات يدوياً أو استخدم الذكاء الاصطناعي للاقتراح بناءً على القيود</p>
+                    </div>
+                    <button type="button" onclick="suggestMealsAI()" class="btn-ai-suggest"
+                            style="background: rgba(107, 142, 35, 0.15); 
+                                   color: #556B2F; 
+                                   border: 2px solid #6B8E23; 
+                                   padding: 10px 20px; 
+                                   border-radius: 8px; 
+                                   cursor: pointer; 
+                                   font-weight: 700;
+                                   display: flex;
+                                   align-items: center;
+                                   gap: 8px;
+                                   box-shadow: 0 4px 15px rgba(107, 142, 35, 0.2);
+                                   transition: all 0.3s ease;">
+                        <i class="fas fa-magic"></i> اقتراح وجبات بالذكاء الاصطناعي
+                    </button>
+                </div>
+                
+                <!-- Loading Indicator -->
+                <div id="ai-loading" style="display: none; text-align: center; padding: 20px; background: #f0f4ff; border-radius: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #667eea;"></i>
+                    <p style="margin: 10px 0 0 0; color: #666;">يقوم الذكاء الاصطناعي بتحليل القيود واقتراح الوجبات...</p>
+                </div>
+                
                 <div class="meals-grid">
                     @foreach($meals as $meal)
                         <div class="meal-checkbox-item" onclick="toggleMealCheckbox({{ $meal->meals_id }})">
@@ -220,48 +254,48 @@
             </div>
 
             <div class="restrictions-section">
-                <h3>Nutritional Restrictions</h3>
-                <p style="color: #666; margin-bottom: 15px;">Add restrictions for this diet (e.g., max calories, min protein)</p>
+                <h3>القيود الغذائية</h3>
+                <p style="color: #666; margin-bottom: 15px;">أضف قيوداً لهذه الحمية (مثل الحد الأقصى للسعرات، الحد الأدنى للبروتين)</p>
                 <div id="restrictions-container">
                     <div class="restriction-item">
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label>Description</label>
-                            <input type="text" name="restrictions[0][restriction]" placeholder="e.g., Maximum daily calories">
+                            <label>الوصف</label>
+                            <input type="text" name="restrictions[0][restriction]" placeholder="مثال: الحد الأقصى للسعرات">
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label>Field</label>
+                            <label>الحقل</label>
                             <select name="restrictions[0][field_name]">
-                                <option value="">Select Field</option>
-                                <option value="calories">Calories</option>
-                                <option value="protein_g">Protein (g)</option>
-                                <option value="carbs_g">Carbs (g)</option>
-                                <option value="fat_g">Fat (g)</option>
+                                <option value="">اختر الحقل</option>
+                                <option value="calories">سعرات</option>
+                                <option value="protein_g">بروتين (جم)</option>
+                                <option value="carbs_g">كربوهيدرات (جم)</option>
+                                <option value="fat_g">دهون (جم)</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label>Operator</label>
+                            <label>العملية</label>
                             <select name="restrictions[0][operator]">
-                                <option value="<">Less than (<)</option>
-                                <option value="<=">Less or equal (<=)</option>
-                                <option value="=">Equal (=)</option>
-                                <option value=">=">Greater or equal (>=)</option>
-                                <option value=">">Greater than (>)</option>
+                                <option value="<">أقل من (<)</option>
+                                <option value="<=">أقل أو يساوي (<=)</option>
+                                <option value="=">يساوي (=)</option>
+                                <option value=">=">أكبر أو يساوي (>=)</option>
+                                <option value=">">أكبر من (>)</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label>Value</label>
-                            <input type="text" name="restrictions[0][value]" placeholder="e.g., 2000">
+                            <label>القيمة</label>
+                            <input type="text" name="restrictions[0][value]" placeholder="مثال: 2000">
                         </div>
-                        <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
+                        <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">حذف</button>
                     </div>
                 </div>
-                <button type="button" class="add-restriction-btn" onclick="addRestriction()">+ Add Restriction</button>
+                <button type="button" class="add-restriction-btn" onclick="addRestriction()">+ إضافة قيد</button>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn-submit">Create Diet</button>
-            <a href="{{ route('specialist.diets.index') }}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">إنشاء الحمية</button>
+            <a href="{{ route('specialist.diets.index') }}" class="btn-cancel">إلغاء</a>
         </div>
     </form>
 </div>
@@ -288,34 +322,34 @@
         const newRestriction = `
             <div class="restriction-item">
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Description</label>
-                    <input type="text" name="restrictions[${restrictionCount}][restriction]" placeholder="e.g., Maximum daily calories">
+                    <label>الوصف</label>
+                    <input type="text" name="restrictions[${restrictionCount}][restriction]" placeholder="مثال: الحد الأقصى للسعرات">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Field</label>
+                    <label>الحقل</label>
                     <select name="restrictions[${restrictionCount}][field_name]">
-                        <option value="">Select Field</option>
-                        <option value="calories">Calories</option>
-                        <option value="protein_g">Protein (g)</option>
-                        <option value="carbs_g">Carbs (g)</option>
-                        <option value="fat_g">Fat (g)</option>
+                        <option value="">اختر الحقل</option>
+                        <option value="calories">سعرات</option>
+                        <option value="protein_g">بروتين (جم)</option>
+                        <option value="carbs_g">كربوهيدرات (جم)</option>
+                        <option value="fat_g">دهون (جم)</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Operator</label>
+                    <label>العملية</label>
                     <select name="restrictions[${restrictionCount}][operator]">
-                        <option value="<">Less than (<)</option>
-                        <option value="<=">Less or equal (<=)</option>
-                        <option value="=">Equal (=)</option>
-                        <option value=">=">Greater or equal (>=)</option>
-                        <option value=">">Greater than (>)</option>
+                        <option value="<">أقل من (<)</option>
+                        <option value="<=">أقل أو يساوي (<=)</option>
+                        <option value="=">يساوي (=)</option>
+                        <option value=">=">أكبر أو يساوي (>=)</option>
+                        <option value=">">أكبر من (>)</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label>Value</label>
-                    <input type="text" name="restrictions[${restrictionCount}][value]" placeholder="e.g., 2000">
+                    <label>القيمة</label>
+                    <input type="text" name="restrictions[${restrictionCount}][value]" placeholder="مثال: 2000">
                 </div>
-                <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">Remove</button>
+                <button type="button" class="remove-restriction-btn" onclick="removeRestriction(this)">حذف</button>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', newRestriction);
@@ -327,7 +361,89 @@
         if (container.children.length > 1) {
             button.closest('.restriction-item').remove();
         } else {
-            alert('You must have at least one restriction field');
+            alert('يجب أن يكون لديك حقل قيد واحد على الأقل');
+        }
+    }
+
+    // ========== AI Suggest Functions ==========
+    async function suggestMealsAI() {
+        const dietName = document.getElementById('name').value;
+        const description = document.getElementById('description').value;
+        
+        if (!dietName) {
+            alert('يرجى إدخال اسم الحمية أولاً');
+            return;
+        }
+        
+        // جمع القيود من الصفحة
+        const restrictions = [];
+        document.querySelectorAll('.restriction-item').forEach(item => {
+            const fieldName = item.querySelector('[name*="[field_name]"]')?.value;
+            const operator = item.querySelector('[name*="[operator]"]')?.value;
+            const value = item.querySelector('[name*="[value]"]')?.value;
+            const restriction = item.querySelector('[name*="[restriction]"]')?.value;
+            
+            if (fieldName && operator && value) {
+                restrictions.push({
+                    field_name: fieldName,
+                    operator: operator,
+                    value: parseFloat(value),
+                    restriction: restriction || ''
+                });
+            }
+        });
+        
+        if (restrictions.length === 0) {
+            alert('يرجى إضافة قيد واحد على الأقل أولاً');
+            return;
+        }
+        
+        // عرض loading
+        document.getElementById('ai-loading').style.display = 'block';
+        
+        try {
+            const response = await fetch('{{ route("specialist.diets.ai_suggest_meals") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    name: dietName,
+                    description: description,
+                    restrictions: restrictions
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // مسح جميع الاختيارات الحالية
+                document.querySelectorAll('.meal-checkbox-item').forEach(item => {
+                    item.classList.remove('selected');
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    checkbox.checked = false;
+                });
+                
+                // تحديد الوجبات المقترحة
+                result.data.meals.forEach(meal => {
+                    const checkbox = document.getElementById('meal_' + meal.meals_id);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        checkbox.closest('.meal-checkbox-item').classList.add('selected');
+                    }
+                });
+                
+                alert(`✨ اقترح الذكاء الاصطناعي ${result.data.meals.length} وجبة!\n\n${result.data.reason}`);
+            } else {
+                alert('فشل: ' + result.message);
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('خطأ في الاتصال بخدمة الذكاء الاصطناعي');
+        } finally {
+            document.getElementById('ai-loading').style.display = 'none';
         }
     }
 </script>

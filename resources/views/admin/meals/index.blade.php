@@ -1,14 +1,38 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Meals Management')
+@section('title', 'إدارة الاطباق')
 
 @section('content')
 <div>
-    <div class="page-header">
-        <h1 class="page-title">Meals Management</h1>
-        <a href="{{ route('admin.meals.create') }}" class="btn-primary">
-             <i class="fas fa-plus"></i> Add New Meal
-        </a> 
+
+
+
+    <div class="page-header" style="flex-direction: column; align-items: start; gap: 10px;">
+
+    
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+
+
+        
+            <h1 class="page-title">إدارة الاطباق</h1>
+
+             <form action="{{ route('admin.meals.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
+            <select name="state" id="state" onchange="this.form.submit()" class="form-control" style="width: 200px; padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-family: 'Cairo';">
+                <option value="">كل الوجبات</option>
+                <option value="approved" {{ request('state') == 'approved' ? 'selected' : '' }}>مقبولة (Approved)</option>
+                <option value="pending" {{ request('state') == 'pending' ? 'selected' : '' }}>معلقة (Pending)</option>
+                <option value="rejected" {{ request('state') == 'rejected' ? 'selected' : '' }}>مرفوضة (Rejected)</option>
+            </select>
+        </form>
+
+            <a href="{{ route('admin.meals.create') }}" class="btn-primary">
+                 <i class="fas fa-plus"></i> إضافة طبق جديدة
+            </a> 
+
+            
+        </div>
+
+       
     </div>
 
     @if(session('success'))
@@ -33,7 +57,7 @@
                             @if($meal->photo_url)
                                 <img src="{{ asset('storage/' . $meal->photo_url) }}" alt="{{ $meal->name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
                             @else
-                                <div style="width: 50px; height: 50px; background: #ccc; border-radius: 8px; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;">No Image</div>
+                                <div style="width: 50px; height: 50px; background: #ccc; border-radius: 8px; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;">لا توجد صورة</div>
                             @endif
                         </td>
                         
@@ -56,16 +80,16 @@
                         
                         {{-- 4. Actions --}}
                         <td>
-                            <div class="action-buttons">
-                                <a href="{{ route('admin.meals.show', $meal->meals_id) }}" class="action-btn view-btn" title="View Meal">
-                                    <i class="fas fa-eye"></i> </a>
-                                <a href="{{ route('admin.meals.edit', $meal->meals_id) }}" class="action-btn edit-btn" title="Edit Meal">
-                                    <i class="fas fa-edit"></i> </a>
+                            <div class="diet-card-actions" style="justify-content: center;">
+                                <a href="{{ route('admin.meals.show', $meal->meals_id) }}" class="diet-action-btn view" title="View Meal">
+                                    👁️ </a>
+                                <a href="{{ route('admin.meals.edit', $meal->meals_id) }}" class="diet-action-btn edit" title="Edit Meal">
+                                    ✏️ </a>
                                 <form action="{{ route('admin.meals.destroy', $meal->meals_id) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="action-btn delete-btn" title="Delete Meal" onclick="return confirm('Are you sure you want to delete this meal?')">
-                                        <i class="fas fa-trash"></i> </button>
+                                    <button type="submit" class="diet-action-btn delete" title="Delete Meal" onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الوجبة؟')">
+                                        🗑️ </button>
                                 </form>
                             </div>
                         </td>
@@ -73,7 +97,7 @@
                 @empty
                     <tr>
                         <td colspan="4" style="text-align: center; padding: 40px;">
-                            No meals found. <a href="{{ route('admin.meals.create') }}">Add your first meal</a>
+                            لم يتم العثور على وجبات. <a href="{{ route('admin.meals.create') }}">أضف وجبتك الأولى</a>
                         </td>
                     </tr>
                 @endforelse

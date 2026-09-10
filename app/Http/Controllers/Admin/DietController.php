@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diet;
-use Illuminate\Http\Request;
 
 class DietController extends Controller
 {
@@ -16,8 +15,8 @@ class DietController extends Controller
         $diets = Diet::with(['nutritionist.user', 'meals'])
             ->latest()
             ->get();
-        
-        return view('admin.diets-main-new', compact('diets'));
+
+        return view('diets.index', compact('diets'));
     }
 
     /**
@@ -26,7 +25,7 @@ class DietController extends Controller
     public function show(string $id)
     {
         $diet = Diet::with(['nutritionist.user', 'meals.category', 'restrictions'])->findOrFail($id);
-        
-        return view('admin.diet-details', compact('diet'));
+
+        return view('diets.show', compact('diet'));
     }
 }

@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-      // database/migrations/..._create_otps_table.php
-Schema::create('otps', function (Blueprint $table) {
-    $table->id();
-    $table->string('identifier')->index(); // يمكن أن يكون الإيميل أو رقم الهاتف
-    $table->string('token', 6);          // الرمز المكون من 6 أرقام
-    $table->timestamp('expires_at');
-    $table->timestamps();
-});
+        // database/migrations/..._create_otps_table.php
+        Schema::create('otps', function (Blueprint $table) {
+            $table->id();
+            $table->string('identifier')->index(); // يمكن أن يكون الإيميل أو رقم الهاتف
+            $table->string('token', 6);          // الرمز المكون من 6 أرقام
+            $table->timestamp('expires_at');
+            $table->timestamps();
+        });
     }
 
     /**

@@ -1,140 +1,149 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MealMate - Welcome Screen</title>
+\u003c!DOCTYPE html\u003e
+\u003chtml lang="ar" dir="rtl"\u003e
+\u003chead\u003e
+    \u003cmeta charset="UTF-8"\u003e
+    \u003cmeta name="viewport" content="width=device-width, initial-scale=1.0"\u003e
+    \u003ctitle\u003eMealMate - مرحباً بك\u003c/title\u003e
     
-    {{-- قمنا بجلب الأيقونات فقط --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {{-- Unified Design System --}}
+    \u003clink rel="stylesheet" href="{{ asset('css/unified-design.css') }}"\u003e
     
-    {{-- ======================================= --}}
-    {{-- ⭐️ تم وضع كل الـ CSS هنا بالداخل ⭐️ --}}
-    {{-- ======================================= --}}
-    <style>
+    {{-- Font Awesome --}}
+    \u003clink rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"\u003e
+    
+    {{-- Arabic Font --}}
+    \u003clink rel="preconnect" href="https://fonts.googleapis.com"\u003e
+    \u003clink rel="preconnect" href="https://fonts.gstatic.com" crossorigin\u003e
+    \u003clink href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet"\u003e
+    
+    \u003cstyle\u003e
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* هذا هو لون الخلفية من تصميمك */
-            background: linear-gradient(135deg, #F5F9F0 0%, #E9F0E1 100%);
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--olive-very-light) 0%, var(--olive-light) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: var(--spacing-xl);
+            direction: rtl;
         }
+        
         .welcome-container {
             position: relative;
             width: 100%;
-            max-width: 800px; /* حجم تقريبي للبطاقة */
+            max-width: 800px;
         }
+        
         .content-box {
             display: flex;
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            overflow: hidden; /* للحفاظ على الحواف الدائرية */
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
             width: 100%;
             min-height: 350px;
         }
+        
         .logo-section {
-            /* الجزء الأيسر باللون الأخضر الفاتح */
-            background-color: #E2EACD; 
+            background-color: var(--olive-light);
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: clamp(2rem, 5vw, 3rem);
         }
+        
         .logo-section h1 {
-            font-size: 36px;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 700;
-            color: #6B8E23; /* لون أخضر زيتوني داكن */
+            color: var(--olive-dark);
         }
+        
         .slogan-section {
-            /* الجزء الأيمن الأبيض */
-            background-color: #ffffff;
-            flex: 1.5; /* إعطاء مساحة أكبر للنص */
+            background-color: var(--bg-white);
+            flex: 1.5;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: clamp(2rem, 5vw, 3rem);
             text-align: center;
         }
+        
         .slogan-section p {
-            font-size: 26px;
+            font-size: clamp(1.25rem, 3vw, 1.625rem);
             font-style: italic;
-            color: #333;
-            margin-bottom: 25px;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xl);
             line-height: 1.4;
         }
+        
         .slogan-section .fa-heart {
-            font-size: 30px;
-            color: #6B8E23; /* لون القلب الأخضر */
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: var(--olive-medium);
         }
+        
         .next-button {
-            /* زر السهم الأخضر */
             position: absolute;
             bottom: -20px;
-            right: -20px;
+            left: -20px;
             width: 60px;
             height: 60px;
-            background-color: #6B8E23; /* لون أخضر */
+            background-color: var(--olive-medium);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: clamp(1.25rem, 3vw, 1.5rem);
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
         }
+        
         .next-button:hover {
             transform: scale(1.1);
-            background-color: #556B1F; /* لون أغمق عند التأشير */
+            background-color: var(--olive-dark);
         }
 
-        /* لجعله متجاوباً مع الجوال */
         @media (max-width: 768px) {
             .content-box {
                 flex-direction: column;
                 min-height: auto;
             }
+            
             .slogan-section p {
-                font-size: 22px;
+                font-size: clamp(1.125rem, 3vw, 1.375rem);
             }
+            
             .next-button {
                 bottom: -25px;
-                right: 15px;
+                left: 15px;
             }
         }
-    </style>
-</head>
-<body>
-    <div class="welcome-container">
-        <div class="content-box">
-            <div class="logo-section">
-                <h1>MealMate</h1>
-            </div>
-            <div class="slogan-section">
-                <p>You are here to make your life better from food</p>
-                <i class="fas fa-heart"></i>
-            </div>
-        </div>
+    \u003c/style\u003e
+\u003c/head\u003e
+\u003cbody\u003e
+    \u003cdiv class="welcome-container"\u003e
+        \u003cdiv class="content-box"\u003e
+            \u003cdiv class="logo-section"\u003e
+                \u003ch1\u003eMealMate\u003c/h1\u003e
+            \u003c/div\u003e
+            \u003cdiv class="slogan-section"\u003e
+                \u003cp\u003eأنت هنا لتجعل حياتك أفضل من خلال الطعام\u003c/p\u003e
+                \u003ci class="fas fa-heart"\u003e\u003c/i\u003e
+            \u003c/div\u003e
+        \u003c/div\u003e
 
-        {{-- ======================================= --}}
-        {{-- ⭐️ تم إصلاح الرابط هنا ⭐️ --}}
-        {{-- ======================================= --}}
-        {{-- هذا الرابط الآن يشير إلى المسار الذي طلبته --}}
-        <a href="{{ url('/login') }}" class="next-button" aria-label="Go to Login Page">
-            <i class="fas fa-arrow-right"></i>
-        </a>
-    </div>
-</body>
-</html>
+        \u003ca href="{{ url('/login') }}" class="next-button" aria-label="الذهاب إلى صفحة تسجيل الدخول"\u003e
+            \u003ci class="fas fa-arrow-left"\u003e\u003c/i\u003e
+        \u003c/a\u003e
+    \u003c/div\u003e
+\u003c/body\u003e
+\u003c/html\u003e

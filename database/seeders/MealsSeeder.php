@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Allergy;
 use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Meal;
-use App\Models\Allergy;
+use Illuminate\Database\Seeder;
 
 class MealsSeeder extends Seeder
 {
@@ -126,7 +126,7 @@ class MealsSeeder extends Seeder
                 'description' => 'A perfect blend of omega-3 rich salmon with protein-packed quinoa',
                 'price' => 15.99,
                 'state' => 'approved',
-                'proper_time' => 'lunch',
+
                 'quantity_g' => 350,
                 'calories' => 450,
                 'protein_g' => 35,
@@ -143,7 +143,7 @@ class MealsSeeder extends Seeder
                 'description' => 'Fresh grilled chicken with mixed greens and vegetables',
                 'price' => 12.99,
                 'state' => 'approved',
-                'proper_time' => 'lunch',
+
                 'quantity_g' => 300,
                 'calories' => 320,
                 'protein_g' => 30,
@@ -161,7 +161,7 @@ class MealsSeeder extends Seeder
                 'description' => 'Nutritious bowl with quinoa, vegetables, and avocado',
                 'price' => 11.99,
                 'state' => 'pending',
-                'proper_time' => 'dinner',
+
                 'quantity_g' => 400,
                 'calories' => 380,
                 'protein_g' => 15,
@@ -179,9 +179,9 @@ class MealsSeeder extends Seeder
         foreach ($meals as $mealData) {
             $ingredients = $mealData['ingredients'];
             unset($mealData['ingredients']);
-            
+
             $meal = Meal::create($mealData);
-            
+
             // Attach ingredients
             $meal->ingredients()->attach($ingredients);
         }

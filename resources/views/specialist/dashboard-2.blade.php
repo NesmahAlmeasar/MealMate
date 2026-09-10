@@ -1,129 +1,70 @@
-@extends('layouts.specialist_app')
+@extends('layouts.admin_app')
 
-{{-- 1. تحديد عنوان الصفحة --}}
-@section('title', 'Dashboard')
+@section('title', 'لوحة تحكم الأخصائي')
 
-{{-- 2. إضافة ملف الـ CSS الخاص بهذه الصفحة --}}
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/styles-2.css') }}">
-@endpush
-
-
-{{-- 3. هذا هو المحتوى المتغير --}}
 @section('content')
-    <div>
-<h1 class="dashboard-title" style="color: green;">Specialist Dashboard - Patients' Adherence</h1>
-        <div class="chart-container">
-            <div class="chart-title" data-i18n="patientsAdherence">Patients' Adherence to Diets</div>
-            <div style="position: relative; height: 300px; width: 100%;"> {{-- تم زيادة الارتفاع --}}
-                <canvas id="adherenceChart"></canvas>
+    <div style="padding: var(--spacing-xl);">
+        <h1 style="margin-bottom: var(--spacing-xl); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; color: var(--text-dark);">لوحة تحكم الأخصائي</h1>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+            {{-- Pending Meals Card --}}
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; color: var(--text-dark); margin: 0;">{{ $pendingMeals }}</h3>
+                    <p style="color: var(--text-light); margin: var(--spacing-xs) 0 0;">وجبات قيد الانتظار</p>
+                </div>
+                <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+
+            {{-- Approved Meals Card --}}
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; color: var(--text-dark); margin: 0;">{{ $approvedMeals }}</h3>
+                    <p style="color: var(--text-light); margin: var(--spacing-xs) 0 0;">وجبات معتمدة</p>
+                </div>
+                <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+
+            {{-- My Diets Card --}}
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; color: var(--text-dark); margin: 0;">{{ $myDietsCount }}</h3>
+                    <p style="color: var(--text-light); margin: var(--spacing-xs) 0 0;">حمياتي التي تم إنشاؤها</p>
+                </div>
+                <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
             </div>
         </div>
 
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-label" data-i18n="totalOrder">Total Order</div>
-                <div class="metric-chart red">81%</div>
-                <div class="metric-value">81%</div>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                <h2 style="margin: 0; font-size: clamp(1.1rem, 2vw, 1.3rem); color: var(--text-dark);">أحدث الوجبات المعلقة</h2>
+                <a href="{{ route('specialist.meals.pending') }}" class="btn btn-primary" style="font-size: 0.9rem; padding: 0.4rem 1rem;">مراجعة الكل</a>
             </div>
-
-            <div class="metric-card">
-                <div class="metric-label" data-i18n="customerGrowth">Customer Growth</div>
-                <div class="metric-chart green">22%</div>
-                <div class="metric-value">22%</div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-label" data-i18n="totalRevenue">Total Revenue</div>
-                <div class="metric-chart blue">62%</div>
-                <div class="metric-value">62%</div>
-            </div>
+            
+            @forelse($recentPendingMeals as $meal)
+                <div style="display: flex; align-items: center; padding: var(--spacing-md) 0; border-bottom: 1px solid var(--bg-gray-dark);">
+                    <div style="width: 40px; height: 40px; background: #fef3c7; color: #d97706; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-left: var(--spacing-md); font-size: 1.1rem;">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 2px;">{{ $meal->name }}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">
+                            {{ $meal->category->category_name ?? 'غير مصنف' }} • ${{ $meal->price }}
+                        </div>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-light);">
+                        {{ $meal->created_at->diffForHumans() }}
+                    </div>
+                </div>
+            @empty
+                <p style="text-align: center; color: var(--text-light); padding: var(--spacing-lg);">لا توجد وجبات معلقة للمراجعة.</p>
+            @endforelse
         </div>
     </div>
 @endsection
-
-
-{{-- 4. إضافة الـ JS الخاص بهذه الصفحة (الرسم البياني) --}}
-@push('scripts')
-    {{-- إضافة مكتبة الرسوم البيانية --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    
-    {{-- الكود المضمّن الخاص بالرسم البياني --}}
-    <script>
-        (function() { // تغليف الكود لمنع التعارض
-            let adherenceChartInstance = null;
-
-            function initChart() {
-                const ctx = document.getElementById('adherenceChart');
-                if (ctx && !adherenceChartInstance) {
-                    
-                    // !! ملاحظة: قمتُ بتغيير الألوان لتناسب الخلفية الفاتحة
-                    const tickColor = 'rgba(0, 0, 0, 0.7)'; // كان أبيض
-                    const gridColor = 'rgba(0, 0, 0, 0.1)'; // كان أبيض
-                    const legendColor = '#333'; // كان أبيض
-
-                    adherenceChartInstance = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                            datasets: [
-                                {
-                                    label: '2023',
-                                    data: [30, 40, 35, 50, 45, 60, 55, 70, 65, 75, 80, 85],
-                                    borderColor: '#3B82F6',
-                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                                    borderWidth: 2,
-                                    tension: 0.4,
-                                    fill: true
-                                },
-                                {
-                                    label: '2024',
-                                    data: [35, 45, 40, 55, 50, 65, 60, 75, 70, 80, 85, 90],
-                                    borderColor: '#EF4444',
-                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                                    borderWidth: 2,
-                                    tension: 0.4,
-                                    fill: true
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            interaction: { intersect: false, mode: 'index' },
-                            plugins: {
-                                legend: {
-                                    labels: { color: legendColor, font: { size: 11 } }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            return context.dataset.label + ': ' + context.parsed.y + '%';
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100,
-                                    ticks: { color: tickColor, font: { size: 10 }, callback: value => value + '%' },
-                                    grid: { color: gridColor, drawBorder: false }
-                                },
-                                x: {
-                                    ticks: { color: tickColor, font: { size: 10 } },
-                                    grid: { color: gridColor, drawBorder: false }
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-
-            // تشغيل الرسم البياني
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(initChart, 200);
-            });
-        })();
-    </script>
-@endpush

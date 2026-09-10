@@ -159,6 +159,8 @@
         .diet-tag.diet-admin { background-color: #FEE2E2; color: #DC2626; }
         .diet-tag.diet-specialist { background-color: #DBEAFE; color: #2563EB; }
         .diet-tag.diet-client { background-color: #D1FAE5; color: #059669; }
+        .diet-tag.diet-nutrition { background-color: #FEF3C7; color: #D97706; }
+        .diet-tag.diet-manager { background-color: #FEF3C7; color: #D97706; }
 
         /* تنسيق أزرار الإجراء (Actions) */
         .action-btn {
@@ -514,6 +516,7 @@
         <div class="form-group">
             <label for="phone">الهاتف (Phone)</label>
             <input type="tel" id="phone" name="phone" value="{{ old('phone', $isEdit ? $user->phone : '') }}"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                    class="@error('phone') is-invalid @enderror">
             @error('phone')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -522,7 +525,7 @@
 
         {{-- الحقل: Password --}}
         <div class="form-group">
-            <label for="password">كلمة المرور {{ $isEdit ? '(اتركها فارغة إذا لم ترد التغيير)' : '' }}</label>
+            <label for="password"> كلمة المرور <small id="password-hint" style="display: none; color: #666; font-size: 0.85em;">(اتركها فارغة إذا لم ترد التغيير)</small></label>
             <input type="password" id="password" name="password" {{ $isEdit ? '' : 'required' }}
                    class="@error('password') is-invalid @enderror">
             @error('password')
@@ -559,6 +562,7 @@
                             @if($role->name == 'Client') (مستفيد) @endif
                             @if($role->name == 'Admin') (مدير) @endif
                             @if($role->name == 'Specialist') (أخصائي) @endif
+                            @if($role->name == 'Nutrition Manager') (مدير التغذية) @endif
                         </label>
                     </div>
                 @endforeach
@@ -571,12 +575,10 @@
 
         {{-- الحقل: Photo --}}
         <div class="form-group full-width">
-            <label for="photo">الصورة (Photo) {{ $isEdit ? '(اختياري)' : '' }}</label>
+            <label for="photo">الصورة (Photo) {{ $isEdit ? '   ' : '' }}</label>
             <div class="file-upload-wrapper">
-                <input type="file" id="photo" name="photo" class="@error('photo') is-invalid @enderror">
-                @if ($isEdit && $user->photo_url)
-                    <img src="{{ asset('storage/' . $user->photo_url) }}" alt="Current" class="current-photo-preview">
-                @endif
+                <input type="file" id="photo" name="photo" class="form-control @error('photo') is-invalid @enderror">
+                <img id="modal-preview-image" src="" alt="Current Profile" class="current-photo-preview" style="display: none; max-width: 100px; margin-top: 10px;">
             </div>
             @error('photo')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -596,4 +598,4 @@
             @enderror
         </div>
     </div>
-</div>
+</div><style>.invalid-feedback { color: var(--red-accent, #DC2626); font-size: 0.85em; margin-top: 4px; }</style>

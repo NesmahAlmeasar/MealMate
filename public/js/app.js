@@ -231,7 +231,7 @@ const translations = {
         drAfnanPoint4: "Committed to improving clients' health through simple, realistic, and sustainable strategies",
         drAfnanPoint5: "Known for a caring, supportive, and results-driven approach",
         drAfnanPoint6: "Provides online consultations tailored to each individual's needs and goals",
-        
+
         // Meal Titles & Descriptions from Data
         "Grilled Salmon with Quinoa": "Grilled Salmon with Quinoa",
         "A perfect blend of lean protein and complex carbohydrates, rich in Omega-3 fatty acids.": "A perfect blend of lean protein and complex carbohydrates, rich in Omega-3 fatty acids.",
@@ -273,7 +273,7 @@ const translations = {
         // Page Titles & Management
         userManagement: "إدارة المستخدمين",
         addNewClient: "إضافة عميل جديد",
-        editClient: "تعديل بيانات العميل",
+        editClient: "تعديل بيانات المستخدم",
         clientProfileTitle: "الملف الشخصي للعميل",
         notificationsTitle: "الإشعارات",
         addNewDiet: "إضافة حمية جديدة",
@@ -295,7 +295,7 @@ const translations = {
         confirmMeals: "تأكيد الوجبات المختارة",
 
         // User Table Headers
-        clientName: "اسم العميل",
+        clientName: "اسم المستخدم",
         email: "البريد الإلكتروني",
         phone: "الهاتف",
         dietPlan: "خطة الحمية",
@@ -390,8 +390,10 @@ const translations = {
 // 2. Core Language & UI Management
 // =================================================================
 
-let currentLanguage = localStorage.getItem('language') || 'en';
-const FIXED_DIR = 'ltr'; // *** تثبيت الاتجاه على LTR دائماً ***
+// Strict Arabic Enforcement
+let currentLanguage = 'ar'; // Force Arabic always
+localStorage.setItem('language', 'ar'); // Ensure storage matches
+const FIXED_DIR = 'ltr'; 
 
 /**
  * يترجم مفتاحاً بناءً على اللغة الحالية
@@ -412,18 +414,18 @@ function setLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('language', lang);
 
-    // فرض اتجاه LTR دائماً
-    document.documentElement.lang = lang;
-    document.documentElement.dir = FIXED_DIR;
-    document.body.dir = FIXED_DIR;
+    // فرض اتجاه RTL دائماً
+    document.documentElement.lang = 'ar';
+    document.documentElement.dir = 'rtl';
+    document.body.dir = 'rtl';
 
-    // فرض محاذاة البحث لليسار
+    // فرض محاذاة البحث لليمين
     document.querySelectorAll('.search-bar input').forEach(input => {
-        input.style.cssText = 'text-align: left !important;';
+        input.style.cssText = 'text-align: right !important;';
     });
     // فرض اتجاه أيقونة الرجوع
     document.querySelectorAll('.back-button i, .back-btn i').forEach(icon => {
-        icon.style.transform = 'rotate(0deg) !important';
+        icon.style.transform = 'rotate(180deg) !important';
     });
 
     updatePageContent();
@@ -435,14 +437,14 @@ function setLanguage(lang) {
  */
 function updatePageContent() {
     // 1. ترجمة العناصر العامة باستخدام data-i18n
-    translateGenericElements();
+    // translateGenericElements(); // Disabled to prevent overwriting server-side Arabic
 
     // 2. تحديثات خاصة
-    updateNavigation();
-    updateGeneralUI();
-    updateUserTableAndForms();
-    updateDietsContent();
-    updateRecentMealsContent();
+    // updateNavigation(); // Disabled
+    // updateGeneralUI(); // Disabled
+    // updateUserTableAndForms(); // Disabled
+    // updateDietsContent(); // Disabled
+    // updateRecentMealsContent(); // Disabled
 
     // 3. تحديث المحتوى الديناميكي (مثل المودال إذا كان مفتوحاً)
     updateModalContentIfVisible();
@@ -452,6 +454,7 @@ function updatePageContent() {
  * يترجم كل العناصر التي تحمل data-i18n
  */
 function translateGenericElements() {
+    return; // Disabled
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -497,7 +500,7 @@ function updateNavigation() {
         'notifications': 'notifications',
         'profile': 'users' // 'Profile' button is also labeled 'Users'
     };
-    
+
     document.querySelectorAll('.nav-menu [data-page]').forEach(item => {
         const pageKey = item.getAttribute('data-page');
         const translationKey = navKeys[pageKey];
@@ -508,7 +511,7 @@ function updateNavigation() {
             }
         }
     });
-    
+
     const logoText = document.querySelector('.logo-text');
     if (logoText) {
         logoText.textContent = t('logo');
@@ -552,12 +555,12 @@ function updateUserTableAndForms() {
         else if (htmlFor === 'address') key = 'address';
         else if (htmlFor === 'gender') key = 'gender';
         else if (htmlFor === 'dob') key = 'dob';
-        
+
         if (key) {
             label.textContent = t(key);
         }
     });
-    
+
     // Gender radio labels
     const maleLabel = document.querySelector('label[for="male"]');
     if (maleLabel) maleLabel.textContent = t('male');
@@ -616,15 +619,15 @@ function updateModalContentIfVisible() {
 
         // Get the *English* title to find the meal data
         const originalTitle = modalTitleEl.getAttribute('data-original-text') || modalTitleEl.textContent.trim();
-        
+
         // Find the meal data using the English title (or the AR translation if that's all we have)
         const meal = mealsData.find(m => m.title === originalTitle || t(m.title) === originalTitle);
         if (!meal) return;
-        
+
         // Retranslate all modal fields
         modalTitleEl.textContent = t(meal.title);
         modalTitleEl.setAttribute('data-original-text', meal.title); // Store original English title
-        
+
         document.getElementById("modal-meal-description").textContent = t(meal.description);
 
         const leftLabels = document.querySelectorAll('.modal-body .meal-details-left .detail-label');
@@ -632,7 +635,7 @@ function updateModalContentIfVisible() {
             leftLabels[0].textContent = t("description");
             leftLabels[1].textContent = t("nutritionalFacts");
         }
-        
+
         const rightLabel = document.querySelector('.meal-details-right .detail-label');
         if (rightLabel) {
             rightLabel.textContent = t("components");
@@ -688,7 +691,7 @@ function showMealDetails(mealId) {
     const modalTitleEl = document.getElementById("modal-meal-title");
     modalTitleEl.textContent = t(meal.title);
     modalTitleEl.setAttribute('data-original-text', meal.title); // Store original English title
-    
+
     document.getElementById("modal-meal-image").src = meal.image;
     document.getElementById("modal-meal-description").textContent = t(meal.description);
     document.getElementById("modal-meal-calories").textContent = `${meal.calories} Kcal`;
@@ -726,7 +729,7 @@ function setupEventListeners() {
 
     // --- Language Toggle ---
     document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const lang = this.getAttribute('data-lang');
             setLanguage(lang);
         });
@@ -781,13 +784,13 @@ function setupEventListeners() {
     }
 
     if (closeBtn) {
-        closeBtn.onclick = function() {
+        closeBtn.onclick = function () {
             modal.style.display = "none";
         }
     }
 
     if (modal) {
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
@@ -795,7 +798,7 @@ function setupEventListeners() {
     }
 
     if (saveChangesBtn) {
-        saveChangesBtn.onclick = function() {
+        saveChangesBtn.onclick = function () {
             alert(t("mealsAddedSuccess")); // Placeholder logic
             modal.style.display = "none";
         }

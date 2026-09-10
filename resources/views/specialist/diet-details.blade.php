@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Diet Details')
+@section('title', 'تفاصيل الحمية')
 
 @push('styles')
 <style>
@@ -98,16 +98,16 @@
         <div>
             <h1>{{ $diet->name }}</h1>
             <span class="status-badge {{ $diet->is_public ? 'status-approved' : 'status-pending' }}">
-                {{ $diet->is_public ? 'Public' : 'Private' }}
+                {{ $diet->is_public ? 'عامة' : 'خاصة' }}
             </span>
         </div>
         <div class="action-buttons">
-            <a href="{{ route('specialist.diets.index') }}" class="btn btn-back">← Back to List</a>
-            <a href="{{ route('specialist.diets.edit', $diet->diets_id) }}" class="btn btn-edit">Edit</a>
+            <a href="{{ route('specialist.diets.index') }}" class="btn btn-back">← عودة للقائمة</a>
+            <a href="{{ route('specialist.diets.edit', $diet->diets_id) }}" class="btn btn-edit">تعديل</a>
             <form action="{{ route('specialist.diets.destroy', $diet->diets_id) }}" method="POST" style="display: inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                <button type="submit" class="btn btn-delete" onclick="return confirm('هل أنت متأكد؟')">حذف</button>
             </form>
         </div>
     </div>
@@ -123,34 +123,34 @@
 
         <div>
             <div class="info-group">
-                <h3>Description</h3>
-                <p>{{ $diet->description ?? 'No description available' }}</p>
+                <h3>الوصف</h3>
+                <p>{{ $diet->description ?? 'لا يوجد وصف متاح' }}</p>
             </div>
 
             @if($diet->warning)
                 <div class="info-group">
-                    <h3>⚠️ Warnings</h3>
+                    <h3>⚠️ تحذيرات</h3>
                     <p>{{ $diet->warning }}</p>
                 </div>
             @endif
 
             @if($diet->advice)
                 <div class="info-group">
-                    <h3>💡 Advice</h3>
+                    <h3>💡 نصائح</h3>
                     <p>{{ $diet->advice }}</p>
                 </div>
             @endif
 
             <div class="info-group">
-                <h3>Created By</h3>
-                <p>{{ $diet->nutritionist->user->Fname ?? 'Unknown' }} {{ $diet->nutritionist->user->Lname ?? '' }}</p>
+                <h3>أنشئت بواسطة</h3>
+                <p>{{ $diet->nutritionist->user->Fname ?? 'غير معروف' }} {{ $diet->nutritionist->user->Lname ?? '' }}</p>
             </div>
         </div>
     </div>
 
     <div style="margin-top: 30px;">
         <div class="info-group">
-            <h3>Meals in This Diet ({{ $diet->meals->count() }})</h3>
+            <h3>الوجبات في هذه الحمية ({{ $diet->meals->count() }})</h3>
             @if($diet->meals->count() > 0)
                 <div class="meals-grid">
                     @foreach($diet->meals as $meal)
@@ -164,16 +164,16 @@
                     @endforeach
                 </div>
             @else
-                <p>No meals added to this diet yet</p>
+                <p>لم تتم إضافة وجبات لهذه الحمية بعد</p>
             @endif
         </div>
 
         <div class="info-group">
-            <h3>Nutritional Restrictions ({{ $diet->restrictions->count() }})</h3>
+            <h3>القيود الغذائية ({{ $diet->restrictions->count() }})</h3>
             @if($diet->restrictions->count() > 0)
                 @foreach($diet->restrictions as $restriction)
                     <div class="restriction-item">
-                        <strong>{{ $restriction->restriction ?? 'Restriction' }}</strong><br>
+                        <strong>{{ $restriction->restriction ?? 'قيد' }}</strong><br>
                         <small>
                             {{ ucfirst(str_replace('_', ' ', $restriction->field_name)) }} 
                             {{ $restriction->operator }} 
@@ -182,7 +182,7 @@
                     </div>
                 @endforeach
             @else
-                <p>No restrictions defined</p>
+                <p>لا توجد قيود محددة</p>
             @endif
         </div>
     </div>

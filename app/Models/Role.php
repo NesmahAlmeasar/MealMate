@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Role extends Model
 {
     // تحديد اسم المفتاح الرئيسي (لأنه ليس id الافتراضي)
-    protected $primaryKey = 'role_id'; 
+    protected $primaryKey = 'role_id';
     // إذا كان اسم الجدول هو 'roles'، فهذا السطر اختياري
-    // protected $table = 'roles'; 
-    
+    // protected $table = 'roles';
+
     protected $keyType = 'integer'; // المفتاح الأساسي هو int/integer
+
     public $incrementing = true;
+
     // السماح بالتعبئة الجماعية لاسم الدور ووصفه
     protected $fillable = ['name', 'description'];
 

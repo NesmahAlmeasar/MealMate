@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Diets Management')
+@section('title', 'إدارة الحميات')
 
 @push('styles')
 <style>
@@ -14,15 +14,20 @@
         margin-bottom: 30px;
     }
     .add-diet-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: rgba(107, 142, 35, 0.15);
+        color: #556B2F;
+        border: 2px solid #6B8E23;
         padding: 12px 24px;
         border-radius: 8px;
         text-decoration: none;
         font-weight: bold;
         transition: transform 0.2s;
+        box-shadow: 0 4px 15px rgba(107, 142, 35, 0.2);
     }
     .add-diet-btn:hover {
+        background: #6B8E23;
+        color: white;
+        box-shadow: 0 6px 20px rgba(107, 142, 35, 0.4);
         transform: translateY(-2px);
     }
     .diets-grid {
@@ -121,8 +126,8 @@
 @section('content')
 <div class="diets-container">
     <div class="diets-header">
-        <h1>Diets Management</h1>
-        <a href="{{ route('specialist.diets.create') }}" class="add-diet-btn">+ Add New Diet</a>
+        <h1>إدارة الحميات</h1>
+        <a href="{{ route('specialist.diets.create') }}" class="add-diet-btn">+ إضافة حمية جديدة</a>
     </div>
 
     @if(session('success'))
@@ -144,33 +149,33 @@
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                         <h3 class="diet-title">{{ $diet->name }}</h3>
                         <span class="{{ $diet->is_public ? 'public-badge' : 'private-badge' }}">
-                            {{ $diet->is_public ? 'Public' : 'Private' }}
+                            {{ $diet->is_public ? 'عامة' : 'خاصة' }}
                         </span>
                     </div>
                     
-                    <p class="diet-description">{{ $diet->description ?? 'No description available' }}</p>
+                    <p class="diet-description">{{ $diet->description ?? 'لا يوجد وصف متاح' }}</p>
                     
                     <div class="diet-meta">
                         <span class="diet-meals-count">
-                            🍽️ {{ $diet->meals->count() }} Meals
+                            🍽️ {{ $diet->meals->count() }} وجبة
                         </span>
                         
-                        <div class="diet-actions" onclick="event.stopPropagation();">
-                            <a href="{{ route('specialist.diets.show', $diet->diets_id) }}" class="btn-sm btn-view">View</a>
-                            <a href="{{ route('specialist.diets.edit', $diet->diets_id) }}" class="btn-sm btn-edit">Edit</a>
-                            <form action="{{ route('specialist.diets.destroy', $diet->diets_id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
-                            </form>
-                        </div>
+                            <div class="diet-actions" onclick="event.stopPropagation();">
+                                <a href="{{ route('specialist.diets.show', $diet->diets_id) }}" class="btn-sm btn-view">عرض</a>
+                                <a href="{{ route('specialist.diets.edit', $diet->diets_id) }}" class="btn-sm btn-edit">تعديل</a>
+                                <form action="{{ route('specialist.diets.destroy', $diet->diets_id) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-sm btn-delete" onclick="return confirm('هل أنت متأكد؟')">حذف</button>
+                                </form>
+                            </div>
                     </div>
                 </div>
             </div>
         @empty
             <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">No diets found</p>
-                <a href="{{ route('specialist.diets.create') }}" class="add-diet-btn">Create Your First Diet</a>
+                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">لم يتم العثور على حميات</p>
+                <a href="{{ route('specialist.diets.create') }}" class="add-diet-btn">أنشئ حميتك الأولى</a>
             </div>
         @endforelse
     </div>

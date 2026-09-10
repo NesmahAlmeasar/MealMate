@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Diet;
 use App\Models\Meal;
 use App\Models\Restriction;
+use App\Services\GeminiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -20,18 +21,51 @@ class DietController extends Controller
         $diets = Diet::with(['nutritionist.user', 'meals'])
             ->latest()
             ->get();
-        
-        return view('specialist.diets-main-new', compact('diets'));
+
+        return view('diets.index', compact('diets'));
     }
 
     /**
      * Show the form for creating a new diet
      */
-    public function create()
+    public function create(Request $request)
     {
-        $meals = Meal::approved()->with('category')->get();
-        
-        return view('specialist.diet-add-new', compact('meals'));
+        $meals = Meal::where('state', 'approved')->with('category')->get();
+
+        // Get consultation_id and client_id from query parameters
+        $consultationId = $request->query('consultation_id');
+        $clientId = $request->query('client_id');
+
+        // If client_id is provided, get client details
+        $selectedClient = null;
+        if ($clientId) {
+            $selectedClient = \App\Models\Client::with('user')
+                ->where('clients_id', $clientId)
+                ->first();
+        }
+
+        // Get clients with open consultations for this specialist
+        $nutritionistId = Auth::id();
+
+        // Get all active consultations for this nutritionist
+        $activeConsultations = \App\Models\Consultation::where('nutritionist_id', $nutritionistId)
+            ->where('status', 'active')
+            ->where('end_time', '>', now())
+            ->with('client')
+            ->get();
+
+        // Extract unique client IDs (user_ids) from consultations
+        $clientUserIds = $activeConsultations->pluck('client_id')->unique();
+
+        // Get Client records for these user_ids
+        $clients = \App\Models\Client::whereIn('clients_id', $clientUserIds)
+            ->with('user')
+            ->get();
+
+        // Check if user can create public diets (Admin or Nutrition Manager)
+        $canCreatePublic = Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Nutrition Manager');
+
+        return view('diets.create', compact('meals', 'consultationId', 'clientId', 'selectedClient', 'clients', 'canCreatePublic'));
     }
 
     /**
@@ -48,11 +82,14 @@ class DietController extends Controller
             'advice' => 'nullable|string',
             'meals' => 'nullable|array',
             'meals.*' => 'exists:meals,meals_id',
+            'clients' => 'nullable|array',
+            'clients.*' => 'exists:clients,clients_id',
             'restrictions' => 'nullable|array',
             'restrictions.*.field_name' => 'required|string',
             'restrictions.*.operator' => 'required|string',
             'restrictions.*.value' => 'required|string',
             'restrictions.*.restriction' => 'nullable|string',
+            'consultation_id' => 'nullable|exists:consultations,consultation_id',
         ]);
 
         // Handle photo upload
@@ -69,7 +106,7 @@ class DietController extends Controller
             ['nutritionist_id' => $nutritionistId],
             [
                 'Academic_level' => 'Specialist',
-                'description' => 'Nutrition Specialist'
+                'description' => 'Nutrition Specialist',
             ]
         );
 
@@ -85,12 +122,12 @@ class DietController extends Controller
         ]);
 
         // Attach meals
-        if (!empty($validated['meals'])) {
+        if (! empty($validated['meals'])) {
             $diet->meals()->attach($validated['meals']);
         }
 
         // Create restrictions
-        if (!empty($validated['restrictions'])) {
+        if (! empty($validated['restrictions'])) {
             foreach ($validated['restrictions'] as $restrictionData) {
                 Restriction::create([
                     'diets_id' => $diet->diets_id,
@@ -102,7 +139,27 @@ class DietController extends Controller
             }
         }
 
-        return redirect()->route('specialist.diets.index')->with('success', 'Diet created successfully!');
+        // Link to Consultation if provided
+        if (! empty($validated['consultation_id'])) {
+            $consultation = \App\Models\Consultation::find($validated['consultation_id']);
+            if ($consultation) {
+                // Link Diet to Consultation
+                $consultation->update(['diet_id' => $diet->diets_id]);
+
+                // Link Diet to Client (Private Diet)
+                $clientRecord = \App\Models\Client::where('clients_id', $consultation->client_id)->first();
+                if ($clientRecord) {
+                    $clientRecord->diets()->syncWithoutDetaching([$diet->diets_id]);
+                }
+            }
+        } else {
+            // If no consultation_id, check for manually selected clients
+            if ($request->has('clients') && ! empty($request->clients)) {
+                $diet->clients()->attach($request->clients);
+            }
+        }
+
+        return redirect()->route('specialist.diets.index')->with('success', 'تم إنشاء الحمية بنجاح!');
     }
 
     /**
@@ -111,8 +168,8 @@ class DietController extends Controller
     public function show(string $id)
     {
         $diet = Diet::with(['nutritionist.user', 'meals.category', 'restrictions'])->findOrFail($id);
-        
-        return view('specialist.diet-details', compact('diet'));
+
+        return view('diets.show', compact('diet'));
     }
 
     /**
@@ -120,10 +177,34 @@ class DietController extends Controller
      */
     public function edit(string $id)
     {
-        $diet = Diet::with(['meals', 'restrictions'])->findOrFail($id);
-        $meals = Meal::approved()->with('category')->get();
-        
-        return view('specialist.diet-edit', compact('diet', 'meals'));
+        $diet = Diet::with(['meals', 'restrictions', 'clients.user'])->findOrFail($id);
+        $meals = Meal::where('state', 'approved')->with('category')->get();
+
+        // Get all active consultations for this nutritionist
+        $nutritionistId = Auth::id();
+        $activeConsultations = \App\Models\Consultation::where('nutritionist_id', $nutritionistId)
+            ->where('status', 'active')
+            ->where('end_time', '>', now())
+            ->get();
+
+        // Extract unique client IDs (user_ids) from consultations
+        $clientUserIds = $activeConsultations->pluck('client_id')->unique();
+
+        // Get associated client IDs from the diet
+        $associatedClientIds = $diet->clients->pluck('clients_id');
+
+        // Merge to keep existing selections
+        $allClientIds = $clientUserIds->merge($associatedClientIds)->unique();
+
+        // Get Client records
+        $clients = \App\Models\Client::whereIn('clients_id', $allClientIds)
+            ->with('user')
+            ->get();
+
+        // Check if user can create public diets
+        $canCreatePublic = Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Nutrition Manager');
+
+        return view('diets.edit', compact('diet', 'meals', 'clients', 'canCreatePublic'));
     }
 
     /**
@@ -142,6 +223,8 @@ class DietController extends Controller
             'advice' => 'nullable|string',
             'meals' => 'nullable|array',
             'meals.*' => 'exists:meals,meals_id',
+            'clients' => 'nullable|array',
+            'clients.*' => 'exists:clients,clients_id',
             'restrictions' => 'nullable|array',
         ]);
 
@@ -184,7 +267,19 @@ class DietController extends Controller
             }
         }
 
-        return redirect()->route('specialist.diets.index')->with('success', 'Diet updated successfully!');
+        // Update clients (for private diets)
+        if (! $diet->is_public) {
+            if ($request->has('clients') && ! empty($request->clients)) {
+                $diet->clients()->sync($request->clients);
+            } else {
+                $diet->clients()->detach();
+            }
+        } else {
+            // If diet is public, remove all client associations
+            $diet->clients()->detach();
+        }
+
+        return redirect()->route('specialist.diets.index')->with('success', 'تم تحديث الحمية بنجاح!');
     }
 
     /**
@@ -193,13 +288,73 @@ class DietController extends Controller
     public function destroy(string $id)
     {
         $diet = Diet::findOrFail($id);
-        
+
         if ($diet->photo_url) {
             Storage::disk('public')->delete($diet->photo_url);
         }
-        
+
         $diet->delete();
 
         return redirect()->route('specialist.diets.index')->with('success', 'Diet deleted successfully!');
+    }
+
+    /**
+     * AI Suggest Meals for Diet (AJAX Endpoint)
+     *
+     * يستقبل بيانات الحمية والقيود ويرسلها لـ Gemini AI
+     * ويعيد قائمة بالوجبات المناسبة
+     */
+    public function aiSuggestMeals(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'restrictions' => 'nullable|array',
+                'restrictions.*.field_name' => 'required|string',
+                'restrictions.*.operator' => 'required|string',
+                'restrictions.*.value' => 'required|numeric',
+                'restrictions.*.restriction' => 'nullable|string',
+            ]);
+
+            // جلب جميع الوجبات المعتمدة
+            $meals = Meal::select('meals_id', 'name', 'calories', 'protein_g', 'fat_g', 'carbs_g')
+                ->where('state', 'approved')
+                ->get();
+
+            if ($meals->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لا توجد وجبات معتمدة في النظام',
+                ], 400);
+            }
+
+            // استدعاء GeminiService
+            $geminiService = new GeminiService;
+            $result = $geminiService->suggestMealsForDiet(
+                $request->only(['name', 'description']),
+                $request->restrictions ?? [],
+                $meals
+            );
+
+            if (empty($result['meals'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لم يتمكن الذكاء الاصطناعي من إيجاد وجبات مناسبة للقيود المحددة',
+                ], 400);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم اقتراح الوجبات بنجاح',
+                'data' => $result,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

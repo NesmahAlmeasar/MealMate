@@ -59,8 +59,10 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA') ?: (ini_get('openssl.cafile') ?: ini_get('curl.cainfo')),
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false),
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET FOREIGN_KEY_CHECKS=0;',
+            ], fn ($value) => $value !== null && $value !== '') : [],
         ],
 
         'mariadb' => [

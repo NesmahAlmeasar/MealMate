@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('Academic_level', 100);
             $table->text('description')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('nutritionist_id')->references('user_id')->on('users')->onDelete('cascade');
         });
 
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->text('advice')->nullable();
             $table->unsignedBigInteger('nutritionist_id')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('nutritionist_id')->references('nutritionist_id')->on('nutritionists')->onDelete('set null');
         });
 
@@ -42,7 +42,7 @@ return new class extends Migration
             $table->string('value', 255);
             $table->unsignedBigInteger('diets_id');
             $table->timestamps();
-            
+
             $table->foreign('diets_id')->references('diets_id')->on('diets')->onDelete('cascade');
         });
 
@@ -52,7 +52,7 @@ return new class extends Migration
             $table->unsignedBigInteger('diets_id');
             $table->unsignedBigInteger('meals_id');
             $table->timestamps();
-            
+
             $table->unique(['diets_id', 'meals_id']);
             $table->foreign('diets_id')->references('diets_id')->on('diets')->onDelete('cascade');
             $table->foreign('meals_id')->references('meals_id')->on('meals')->onDelete('cascade');

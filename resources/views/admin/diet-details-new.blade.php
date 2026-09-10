@@ -1,7 +1,7 @@
 @extends('layouts.admin_app')
 
 {{-- 1. تحديد عنوان الصفحة --}}
-@section('title', 'Diet Details')
+@section('title', 'نايلز الحمية')
 
 {{-- 2. إضافة الـ CSS المضمن والخاص بالصفحة --}}
 @push('styles')
@@ -55,7 +55,7 @@
 @section('content')
     <a href="{{ url('admin/diets') }}" class="back-btn" data-i18n="back">
         <i class="fas fa-arrow-left"></i>
-        Back to Diets List
+        العودة لقائمة الحميات
     </a>
     <div class="page-content">
         <div class="diets-header-bar">
@@ -63,17 +63,17 @@
             <div class="diet-actions">
                 {{-- إصلاح الروابط (استخدام 1 كمثال لـ ID) --}}
                 <button class="btn btn-edit" onclick="window.location.href='{{ url('specialist/diets/edit/1') }}';" data-i18n="edit">
-                    ✏️ Edit Diet
+                    ✏️ تعديل الحمية
                 </button>
                 <button class="btn btn-delete" data-i18n="delete">
-                    🗑️ Delete Diet
+                    🗑️ حذف الحمية
                 </button>
             </div>
         </div>
 
         <div class="diet-details-container">
             <div class="diet-details-info">
-                <h2 data-i18n="description">Description</h2>
+                <h2 data-i18n="description">الوصف</h2>
                 <p id="diet-details-description">The ketogenic diet is a very low-carb, high-fat diet...</p>
                 <div class="diet-image-details">
                     {{-- الصور الخارجية (External) لا تحتاج asset() --}}
@@ -83,7 +83,7 @@
 
             <div class="meals-section">
                 <div class="meals-title">
-                    <span data-i18n="selectedMeals">Associated Meals (Dishes)</span>
+                    <span data-i18n="selectedMeals">الوجبات المرتبطة (الأطباق)</span>
                    
                 </div>
                 <div class="meals-grid" id="diet-meals-grid">
@@ -122,7 +122,7 @@
     <div id="meal-modal-details" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
-            <h2 data-i18n="allAvailableMeals">Select Meals to Add</h2>
+            <h2 data-i18n="allAvailableMeals">اختر وجبات للإضافة</h2>
             <div class="meal-checkbox-list">
                 <label class="meal-checkbox-item">
                     <input type="checkbox" name="meal-select" value="meal1">
@@ -132,7 +132,7 @@
                 {{-- ... باقي الخيارات ... --}}
             </div>
             <button class="btn btn-add" id="confirm-meals-btn-details" style="width: 100%; margin-top: 10px;" data-i18n="confirmMeals">
-                Add Selected Meals
+                إضافة الوجبات المحددة
             </button>
         </div>
     </div>
@@ -183,7 +183,7 @@
                             </div>
                             <div class="meal-info">
                                 <div class="meal-name">${mealName}</div>
-                                <div class="meal-restaurant" data-i18n="newDishAdded">New dish added to the diet.</div>
+                                <div class="meal-restaurant" data-i18n="newDishAdded">تمت إضافة طبق جديد للحمية.</div>
                             </div>
                         `;
                         dietMealsGrid.appendChild(newMealCard);
@@ -196,7 +196,7 @@
                     if (typeof showToast === 'function') {
                         showToast('mealsAddedSuccess');
                     } else {
-                        alert('Meals added successfully!');
+                        alert('تمت إضافة الوجبات بنجاح!');
                     }
                     
                     // إعادة تطبيق الترجمة على العناصر المضافة حديثاً

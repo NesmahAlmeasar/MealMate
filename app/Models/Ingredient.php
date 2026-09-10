@@ -10,7 +10,9 @@ class Ingredient extends Model
     use HasFactory;
 
     protected $table = 'ingredients';
+
     protected $primaryKey = 'ingredients_id';
+
     public $incrementing = true;
 
     protected $fillable = [
@@ -34,7 +36,7 @@ class Ingredient extends Model
     /**
      * Relationship with Meals (Many-to-Many)
      */
-    public function meals()
+    public function meals(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             Meal::class,
@@ -47,7 +49,7 @@ class Ingredient extends Model
     /**
      * Relationship with Allergies (Many-to-Many)
      */
-    public function allergies()
+    public function allergies(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             Allergy::class,

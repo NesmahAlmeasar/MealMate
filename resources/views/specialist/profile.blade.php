@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'My Profile')
+@section('title', 'ملفي الشخصي')
 
 @push('styles')
 <style>
@@ -102,7 +102,7 @@
     }
 
     .stat-item {
-        text-align: center;
+        teUxt-align: center;
     }
 
     .stat-number {
@@ -270,15 +270,7 @@
 @endpush
 
 @section('content')
-<!-- Back Button -->
-<a href="{{ route('specialist.dashboard') }}" class="back-button-link">
-    <i class="fas fa-arrow-left"></i> Back to Dashboard
-</a>
 
-<!-- Profile Header -->
-<div class="profile-header">
-    <h1 class="profile-title">My Profile</h1>
-</div>
 
 @if(session('success'))
     <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
@@ -288,8 +280,11 @@
 
 <!-- Profile Content -->
 <div class="profile-content">
+    
     <!-- Profile Card -->
     <div class="profile-card">
+
+
         <div class="profile-image">
             @if($user->photo_url)
                 <img src="{{ asset('storage/' . $user->photo_url) }}" alt="{{ $user->Fname }}">
@@ -298,27 +293,33 @@
             @endif
         </div>
         <div class="profile-name">{{ $user->Fname }} {{ $user->Lname }}</div>
-        <div class="profile-title-text">{{ $nutritionist->Academic_level ?? 'Nutrition Specialist' }}</div>
+        <div class="profile-title-text">{{ $nutritionist->Academic_level ?? 'User' }}</div>
 
         <div class="profile-stats">
             <div class="stat-item">
-                <div class="stat-number">0</div>
-                <div class="stat-text">Clients</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">{{ $dietsCount }}</div>
-                <div class="stat-text">Diets</div>
+                <div class="stat-number">{{ $dietsCount ?? 0 }}</div>
+                <div class="stat-text">حميات</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">5.0</div>
-                <div class="stat-text">Rating</div>
+                <div class="stat-text">تقييم</div>
             </div>
         </div>
 
         <div class="profile-actions">
             <button class="btn-edit" onclick="toggleEditMode()">
-                <i class="fas fa-edit"></i> <span id="editBtnText">Edit Profile</span>
+                <i class="fas fa-edit"></i> <span id="editBtnText">تعديل الملف الشخصي</span>
             </button>
+
+    {{-- Logout --}}
+                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="icon-button" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+
+
         </div>
     </div>
 
@@ -328,34 +329,35 @@
         <div id="viewMode">
             <!-- Personal Information -->
             <div class="details-section">
-                <div class="section-title">Personal Information</div>
+                <div class="section-title">المعلومات الشخصية</div>
                 <div class="detail-row">
-                    <div class="detail-label">Full Name</div>
+                    <div class="detail-label">الاسم الكامل</div>
                     <div class="detail-value">{{ $user->Fname }} {{ $user->Lname }}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Email</div>
+                    <div class="detail-label">البريد الإلكتروني</div>
                     <div class="detail-value">{{ $user->email }}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Phone</div>
-                    <div class="detail-value">{{ $user->phone ?? 'Not provided' }}</div>
+                    <div class="detail-label">الهاتف</div>
+                    <div class="detail-value">{{ $user->phone ?? 'غير متوفر' }}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Account Status</div>
-                    <div class="detail-value">{{ $user->account_state ?? 'Active' }}</div>
+                    <div class="detail-label">حالة الحساب</div>
+                    <div class="detail-value">{{ $user->account_state ?? 'نشط' }}</div>
                 </div>
             </div>
 
             <!-- Professional Information -->
+            @if($nutritionist)
             <div class="details-section">
-                <div class="section-title">Professional Information</div>
+                <div class="section-title">المعلومات المهنية</div>
                 <div class="detail-row">
-                    <div class="detail-label">Academic Level</div>
-                    <div class="detail-value">{{ $nutritionist->Academic_level ?? 'Not specified' }}</div>
+                    <div class="detail-label">المستوى الأكاديمي</div>
+                    <div class="detail-value">{{ $nutritionist->Academic_level ?? 'غير محدد' }}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Total Diets Created</div>
+                    <div class="detail-label">إجمالي الحميات المنشأة</div>
                     <div class="detail-value">{{ $dietsCount }}</div>
                 </div>
             </div>
@@ -363,83 +365,86 @@
             <!-- Bio -->
             @if($nutritionist->description)
             <div class="details-section">
-                <div class="section-title">Bio</div>
+                <div class="section-title">السيرة الذاتية</div>
                 <p style="color: var(--text-light); font-size: 14px; line-height: 1.6;">
                     {{ $nutritionist->description }}
                 </p>
             </div>
             @endif
+            @endif
         </div>
 
         <!-- Edit Mode -->
         <div id="editMode" class="edit-form">
-            <form action="{{ route('specialist.profile.update') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="details-section">
-                    <div class="section-title">Personal Information</div>
+                    <div class="section-title">المعلومات الشخصية</div>
                     
                     <div class="form-group">
-                        <label for="Fname">First Name *</label>
+                        <label for="Fname">الاسم الأول *</label>
                         <input type="text" id="Fname" name="Fname" value="{{ old('Fname', $user->Fname) }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="Lname">Last Name *</label>
+                        <label for="Lname">اسم العائلة *</label>
                         <input type="text" id="Lname" name="Lname" value="{{ old('Lname', $user->Lname) }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email *</label>
+                        <label for="email">البريد الإلكتروني *</label>
                         <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Phone</label>
+                        <label for="phone">الهاتف</label>
                         <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
                     </div>
 
                     <div class="form-group">
-                        <label for="photo">Profile Photo</label>
-                        <input type="file" id="photo" name="photo" accept="image/*">
-                        <small style="color: var(--text-light);">Leave empty to keep current photo</small>
+                        <label for="photo">الصورة الشخصية</label>
+                        <input type="file" id="photo" name="photo" class="form-control" accept="image/*">
+                        <small style="color: var(--text-light);">اتركها فارغة للاحتفاظ بالصورة الحالية</small>
                     </div>
                 </div>
 
+                @if($nutritionist)
                 <div class="details-section">
-                    <div class="section-title">Professional Information</div>
+                    <div class="section-title">المعلومات المهنية</div>
                     
                     <div class="form-group">
-                        <label for="Academic_level">Academic Level</label>
-                        <input type="text" id="Academic_level" name="Academic_level" value="{{ old('Academic_level', $nutritionist->Academic_level) }}" placeholder="e.g., PhD in Nutrition, MSc Clinical Nutrition">
+                        <label for="Academic_level">المستوى الأكاديمي</label>
+                        <input type="text" id="Academic_level" name="Academic_level" value="{{ old('Academic_level', $nutritionist->Academic_level) }}" placeholder="مثال: دكتوراة في التغذية، ماجستير تغذية علاجية">
                     </div>
 
                     <div class="form-group">
-                        <label for="description">Bio / Description</label>
-                        <textarea id="description" name="description" placeholder="Tell us about yourself, your experience, and specializations">{{ old('description', $nutritionist->description) }}</textarea>
+                        <label for="description">السيرة الذاتية / الوصف</label>
+                        <textarea id="description" name="description" placeholder="أخبرنا عن نفسك وخبراتك وتخصصاتك">{{ old('description', $nutritionist->description) }}</textarea>
                     </div>
                 </div>
+                @endif
 
                 <div class="details-section">
-                    <div class="section-title">Change Password (Optional)</div>
+                    <div class="section-title">تغيير كلمة المرور (اختياري)</div>
                     
                     <div class="form-group">
-                        <label for="password">New Password</label>
-                        <input type="password" id="password" name="password" placeholder="Leave empty to keep current password">
+                        <label for="password">كلمة المرور الجديدة</label>
+                        <input type="password" id="password" name="password" placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية">
                     </div>
 
                     <div class="form-group">
-                        <label for="password_confirmation">Confirm New Password</label>
+                        <label for="password_confirmation">تأكيد كلمة المرور الجديدة</label>
                         <input type="password" id="password_confirmation" name="password_confirmation">
                     </div>
                 </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn-save">
-                        <i class="fas fa-save"></i> Save Changes
+                        <i class="fas fa-save"></i> حفظ التغييرات
                     </button>
                     <button type="button" class="btn-cancel" onclick="toggleEditMode()">
-                        <i class="fas fa-times"></i> Cancel
+                        <i class="fas fa-times"></i> إلغاء
                     </button>
                 </div>
             </form>
@@ -457,11 +462,11 @@
         if (editMode.classList.contains('active')) {
             editMode.classList.remove('active');
             viewMode.style.display = 'block';
-            editBtnText.textContent = 'Edit Profile';
+            editBtnText.textContent = 'تعديل الملف الشخصي';
         } else {
             editMode.classList.add('active');
             viewMode.style.display = 'none';
-            editBtnText.textContent = 'Cancel Edit';
+            editBtnText.textContent = 'إلغاء التعديل';
         }
     }
 </script>

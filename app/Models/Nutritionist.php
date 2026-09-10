@@ -10,7 +10,9 @@ class Nutritionist extends Model
     use HasFactory;
 
     protected $table = 'nutritionists';
+
     protected $primaryKey = 'nutritionist_id';
+
     public $incrementing = false;
 
     protected $fillable = [
@@ -22,7 +24,7 @@ class Nutritionist extends Model
     /**
      * Relationship with User
      */
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'nutritionist_id', 'user_id');
     }
@@ -30,8 +32,16 @@ class Nutritionist extends Model
     /**
      * Relationship with Diets
      */
-    public function diets()
+    public function diets(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Diet::class, 'nutritionist_id', 'nutritionist_id');
+    }
+
+    /**
+     * Relationship with Certificates
+     */
+    public function certificates(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Certificate::class, 'nutritionist_id', 'nutritionist_id');
     }
 }

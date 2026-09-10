@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Diets - View Only')
+@section('title', 'الحميات - عرض فقط')
 
 @push('styles')
 <style>
@@ -90,8 +90,8 @@
 @section('content')
 <div class="diets-container">
     <div class="diets-header">
-        <h1>Diets Library</h1>
-        <p style="color: #666;">View all available diet plans (Read-only access)</p>
+        <h1>مكتبة الحميات</h1>
+        <p style="color: #666;">عرض جميع خطط الحمية المتاحة (للقراءة فقط)</p>
     </div>
 
     <div class="diets-grid">
@@ -107,24 +107,24 @@
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                         <h3 class="diet-title">{{ $diet->name }}</h3>
                         <span class="{{ $diet->is_public ? 'public-badge' : 'private-badge' }}">
-                            {{ $diet->is_public ? 'Public' : 'Private' }}
+                            {{ $diet->is_public ? 'عام' : 'خاص' }}
                         </span>
                     </div>
                     
-                    <p class="diet-description">{{ $diet->description ?? 'No description available' }}</p>
+                    <p class="diet-description">{{ $diet->description ?? 'لا يوجد وصف متاح' }}</p>
                     
                     <div class="diet-meta">
                         <span class="diet-meals-count">
-                            🍽️ {{ $diet->meals->count() }} Meals
+                            🍽️ {{ $diet->meals->count() }} وجبات
                         </span>
                         
-                        <a href="{{ route('admin.diets.show', $diet->diets_id) }}" class="btn-view" onclick="event.stopPropagation();">View Details</a>
+                        <a href="{{ route('admin.diets.show', $diet->diets_id) }}" class="btn-view" onclick="event.stopPropagation();">عرض التفاصيل</a>
                     </div>
                 </div>
             </div>
         @empty
             <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                <p style="font-size: 18px; color: #666;">No diets available</p>
+                <p style="font-size: 18px; color: #666;">لا توجد حميات متاحة</p>
             </div>
         @endforelse
     </div>

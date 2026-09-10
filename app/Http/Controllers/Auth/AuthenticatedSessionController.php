@@ -16,6 +16,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        if (Auth::check()) {
+            Auth::guard('web')->logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+        }
+
         return view('auth.login');
     }
 
@@ -30,21 +36,23 @@ class AuthenticatedSessionController extends Controller
         // 3. جلب المستخدم الحالي
         $user = $request->user();
 
-        // 4. فحص الأدوار والتوجيه
-        if ($user->hasRole('Admin')) {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
-        } 
-        elseif ($user->hasRole('Specialist')) {
-            return redirect()->intended(route('specialist.dashboard', absolute: false));
+        // 4. فحص الأدوار والتوجيه إلى الداش بورد المشتركة
+        // إذا كان المستخدم: أخصائي، مدير تغذية، مدير مطعم، أو مدير عام
+        if ($user->hasRole('Admin') ||
+            $user->hasRole('Specialist') ||
+            $user->hasRole('Nutrition Manager') ||
+            $user->hasRole('Restaurant Manager')) {
+
+            return redirect()->intended(route('shared.dashboard', absolute: false));
         }
 
-        // 5. إذا كان مستخدم عادي (ليس مديراً ولا أخصائياً) - منع الدخول
+        // 5. إذا كان مستخدم عادي (User/Client) - منع الدخول للويب
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect('/')->withErrors([
-            'email' => 'عذراً، لا تملك صلاحية الدخول. هذا النظام مخصص للمدراء وأخصائيي التغذية فقط.',
+            'email' => 'عذراً، لا تملك صلاحية الدخول. هذا النظام مخصص للمدراء والأخصائيين فقط.',
         ]);
     }
 

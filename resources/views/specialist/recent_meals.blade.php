@@ -1,7 +1,7 @@
-@extends('layouts.specialist_app')
+@extends('layouts.admin_app')
 
 {{-- 1. تحديد عنوان الصفحة --}}
-@section('title', 'Recent Meals')
+@section('title', 'الوجبات الحديثة')
 
 {{-- 2. إضافة ملف الـ CSS الخاص بهذه الصفحة --}}
 @push('styles')
@@ -15,7 +15,7 @@
         {{-- إصلاح رابط زر الرجوع --}}
         <button class="back-btn" onclick="window.location.href='{{ url('specialist/dishes') }}'">
             <i class="fas fa-arrow-left"></i>
-            <span data-i18n="back">Back to Dishes</span>
+            <span data-i18n="back">عودة للأطباق</span>
         </button>
 
         <div class="section-header">
@@ -75,30 +75,30 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div class="modal-header">
-                <h2 class="modal-title" id="modal-meal-title">Meal Details</h2>
+                <h2 class="modal-title" id="modal-meal-title">تفاصيل الوجبة</h2>
             </div>
             <div class="modal-body">
                 <div class="meal-details-left">
                     <img src="{{ asset('images/meal_1.jpg') }}" alt="Meal Image" class="modal-image" id="modal-meal-image">
-                    <div class="detail-label" data-i18n="description">Description:</div>
+                    <div class="detail-label" data-i18n="description">الوصف:</div>
                     <p class="detail-value" id="modal-meal-description">...</p>
-                    <div class="detail-label" data-i18n="nutritionalFacts">Nutritional Facts:</div>
+                    <div class="detail-label" data-i18n="nutritionalFacts">الحقائق الغذائية:</div>
                     <p class="detail-value">
                         <span id="modal-meal-calories" class="calories">...</span> | 
-                        Protein: <span id="modal-meal-protein">...</span> | 
-                        Carbs: <span id="modal-meal-carbs">...</span> | 
-                        Fat: <span id="modal-meal-fat">...</span>
+                        بروتين: <span id="modal-meal-protein">...</span> | 
+                        كربوهيدرات: <span id="modal-meal-carbs">...</span> | 
+                        دهون: <span id="modal-meal-fat">...</span>
                     </p>
                 </div>
                 <div class="meal-details-right">
-                    <div class="detail-label" data-i18n="components">Components:</div>
+                    <div class="detail-label" data-i18n="components">المكونات:</div>
                     <ul class="ingredients-list" id="modal-ingredients-list">
                         {{-- يتم ملؤها بواسطة JS --}}
                     </ul>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="save-btn" id="save-changes-btn" data-i18n="saveChanges">Save Changes</button>
+                <button class="save-btn" id="save-changes-btn" data-i18n="saveChanges">حفظ التغييرات</button>
             </div>
         </div>
     </div>

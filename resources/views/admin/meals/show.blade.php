@@ -1,6 +1,6 @@
 @extends('layouts.admin_app')
 
-@section('title', 'Meal Details')
+@section('title', 'تفاصيل الوجبة')
 
 @push('styles')
 <style>
@@ -142,12 +142,12 @@
             </span>
         </div>
         <div class="action-buttons">
-            <a href="{{ route('admin.meals.index') }}" class="btn btn-back">← Back to List</a>
-            <a href="{{ route('admin.meals.edit', $meal->meals_id) }}" class="btn btn-edit">Edit</a>
+            <a href="{{ route('admin.meals.index') }}" class="btn btn-back">← العودة للقائمة</a>
+            <a href="{{ route('admin.meals.edit', $meal->meals_id) }}" class="btn btn-edit">تعديل</a>
             <form action="{{ route('admin.meals.destroy', $meal->meals_id) }}" method="POST" style="display: inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this meal?')">Delete</button>
+                <button type="submit" class="btn btn-delete" onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الوجبة؟')">حذف</button>
             </form>
         </div>
     </div>
@@ -163,42 +163,42 @@
 
         <div class="meal-info-section">
             <div class="info-group">
-                <h3>Basic Information</h3>
-                <p><strong>Category:</strong> {{ $meal->category->category_name ?? 'N/A' }}</p>
-                <p><strong>Price:</strong> ${{ number_format($meal->price, 2) }}</p>
-                <p><strong>Proper Time:</strong> {{ ucfirst($meal->proper_time ?? 'Any time') }}</p>
-                <p><strong>Quantity:</strong> {{ $meal->quantity_g ?? 'N/A' }}g</p>
+                <h3>المعلومات الأساسية</h3>
+                <p><strong>الفئة:</strong> {{ $meal->category->category_name ?? 'N/A' }}</p>
+                <p><strong>السعر:</strong> ${{ number_format($meal->price, 2) }}</p>
+
+                <p><strong>الكمية:</strong> {{ $meal->quantity_g ?? 'N/A' }}g</p>
             </div>
 
             <div class="info-group">
-                <h3>Description</h3>
+                <h3>الوصف</h3>
                 <p>{{ $meal->description ?? 'No description available' }}</p>
             </div>
 
             <div class="info-group">
-                <h3>Nutritional Information</h3>
+                <h3>المعلومات الغذائية</h3>
                 <div class="nutrition-grid">
                     <div class="nutrition-item">
                         <strong>{{ $meal->calories ?? 0 }}</strong>
-                        <span>Calories</span>
+                        <span>سعرات حرارية</span>
                     </div>
                     <div class="nutrition-item">
                         <strong>{{ $meal->protein_g ?? 0 }}g</strong>
-                        <span>Protein</span>
+                        <span>بروتين</span>
                     </div>
                     <div class="nutrition-item">
                         <strong>{{ $meal->carbs_g ?? 0 }}g</strong>
-                        <span>Carbs</span>
+                        <span>كربوهيدرات</span>
                     </div>
                     <div class="nutrition-item">
                         <strong>{{ $meal->fat_g ?? 0 }}g</strong>
-                        <span>Fat</span>
+                        <span>دهون</span>
                     </div>
                 </div>
             </div>
 
             <div class="info-group">
-                <h3>Ingredients ({{ $meal->ingredients->count() }})</h3>
+                <h3>المكونات ({{ $meal->ingredients->count() }})</h3>
                 @if($meal->ingredients->count() > 0)
                     <ul class="ingredients-list">
                         @foreach($meal->ingredients as $ingredient)
@@ -221,7 +221,7 @@
                         @endforeach
                     </ul>
                 @else
-                    <p>No ingredients listed</p>
+                    <p>لا يوجد مكونات مدرجة</p>
                 @endif
             </div>
         </div>
